@@ -39,18 +39,14 @@ import in.nowke.expensa.classes.ClickListener;
 import in.nowke.expensa.classes.DividerItemDecoration;
 import in.nowke.expensa.classes.Message;
 import in.nowke.expensa.classes.RecyclerTouchListener;
+import in.nowke.expensa.fragments.HomeFragment;
 
 public class MainActivity extends AppCompatActivity {
 
     Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
-    public RecyclerView mAccountList;
-    public static AccountListAdapter adapter;
-    private FloatingActionButton fabAddAccount;
+    HomeFragment homeFragment;
 
-    private ActionMode mActionMode;
-    private int selectedItem;
-    private int statusBarColor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,8 +86,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (mActionMode != null) {
-            mActionMode.finish();
+        if (homeFragment.finishActionMode()) {
             return;
         }
         super.onBackPressed();
@@ -102,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
      */
     private void showMainWindow() {
         setContentView(R.layout.activity_main);
+        homeFragment = (HomeFragment) getFragmentManager().findFragmentById(R.id.fragmentHome);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             clearStatusBarColor();
@@ -117,45 +113,6 @@ public class MainActivity extends AppCompatActivity {
         if (navigationView != null) {
             setupDrawerContent(navigationView);
         }
-
-        // ACCOUNT LIST RECYCLERVIEW
-        mAccountList = (RecyclerView) findViewById(R.id.accountListRecycler);
-        adapter = new AccountListAdapter(this, getData());
-        mAccountList.setAdapter(adapter);
-        mAccountList.addItemDecoration(new DividerItemDecoration(this, null));
-        mAccountList.setLayoutManager(new LinearLayoutManager(this));
-        mAccountList.addOnItemTouchListener(new RecyclerTouchListener(this, mAccountList, new ClickListener() {
-            @Override
-            public void onClick(View view, int position) {
-                if (mActionMode != null) {
-                    mActionMode.finish();
-                    return;
-                }
-
-            }
-
-            @Override
-            public void onLongClick(View view, int position) {
-                if (mActionMode != null) {
-                    return;
-                }
-                mActionModeCallback.setClickedView(view);
-                selectedItem = position;
-                mActionMode = MainActivity.this.startSupportActionMode(mActionModeCallback);
-
-                view.setSelected(true);
-            }
-        }));
-
-        // FAB
-        fabAddAccount = (FloatingActionButton) findViewById(R.id.fab_add_account);
-        fabAddAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(MainActivity.this, AddAccountActivity.class));
-            }
-        });
-
     }
 
     /**
@@ -237,71 +194,6 @@ public class MainActivity extends AppCompatActivity {
         }
         return !ranBefore;
     }
-
-    public List<AccountDetail> getData() {
-        AccountDBAdapter helper = new AccountDBAdapter(this);
-        return helper.getAccountInfo();
-    }
-
-    private ActionCallback mActionModeCallback = new ActionCallback() {
-
-        public View mClickedView;
-
-        public void setClickedView(View view) {
-            mClickedView = view;
-        }
-
-        @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                //hold current color of status bar
-                statusBarColor = getWindow().getStatusBarColor();
-                getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-                //set your gray color
-                getWindow().setStatusBarColor(0xFF555555);
-            }
-            MenuInflater inflater = mode.getMenuInflater();
-            inflater.inflate(R.menu.menu_account_select, menu);
-            return true;
-        }
-
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            return false;
-        }
-
-        @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            int id = item.getItemId();
-
-            if (id == R.id.action_remover) {
-                TextView userIdText = (TextView) mClickedView.findViewById(R.id.userId);
-                int uid = Integer.parseInt(userIdText.getText().toString());
-                AccountDBAdapter helper = new AccountDBAdapter(getApplicationContext());
-                helper.removeAccount(uid);
-                adapter.remove(selectedItem);
-                mode.finish();
-                return true;
-
-            }
-
-            return false;
-        }
-
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                //return to "old" color of status bar
-                getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-                getWindow().clearFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-                getWindow().setStatusBarColor(statusBarColor);
-            }
-            mActionMode = null;
-            selectedItem = -1;
-            mClickedView.setSelected(false);
-        }
-    };
 }
 
 /**

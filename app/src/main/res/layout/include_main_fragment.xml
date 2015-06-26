@@ -23,28 +23,10 @@
 
     </android.support.design.widget.AppBarLayout>
 
-
-    <android.support.v7.widget.RecyclerView
-        android:layout_marginTop="?attr/actionBarSize"
-        android:id="@+id/accountListRecycler"
+    <fragment
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:longClickable="true" />
-
-
-    <android.support.design.widget.FloatingActionButton
-        app:borderWidth="0dp"
-        android:id="@+id/fab_add_account"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="end|bottom"
-        android:layout_margin="@dimen/fab_margin"
-        app:elevation="@dimen/fab_elevation"
-        android:src="@drawable/ic_add_white"
-        tools:ignore="UnusedAttribute" />
-
+        android:layout_height="match_parent"
+        android:name="in.nowke.expensa.fragments.HomeFragment"
+        android:id="@+id/fragmentHome" />
 
 </android.support.design.widget.CoordinatorLayout>

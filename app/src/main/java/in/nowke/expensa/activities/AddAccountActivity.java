@@ -18,6 +18,7 @@ import in.nowke.expensa.R;
 import in.nowke.expensa.adapters.AccountDBAdapter;
 import in.nowke.expensa.adapters.AvatarAdapter;
 import in.nowke.expensa.classes.AccountDetail;
+import in.nowke.expensa.fragments.HomeFragment;
 
 public class AddAccountActivity extends AppCompatActivity {
 
@@ -113,7 +114,7 @@ public class AddAccountActivity extends AppCompatActivity {
             accountDetail.user_name = accountName;
             accountDetail.user_balance = 0.0;
             accountDetail.user_id = id;
-            MainActivity.adapter.add(accountDetail, MainActivity.adapter.getItemCount());
+            HomeFragment.adapter.add(accountDetail, HomeFragment.adapter.getItemCount());
 
             finish();
             overridePendingTransition(R.anim.top_in, R.anim.bottom_out);
