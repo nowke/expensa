@@ -9,10 +9,12 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import in.nowke.expensa.classes.AccountDetail;
 import in.nowke.expensa.classes.AccountDetailInfo;
 import in.nowke.expensa.classes.Message;
+import in.nowke.expensa.classes.Utilities;
 
 /**
  * Created by nav on 1/5/15.
@@ -25,12 +27,14 @@ public class AccountDBAdapter {
         helper = new AccountDBHelper(context);
     }
 
-    public long addAccount(String accName, int avatarIconId) {
+    public long addAccount(AccountDetail accountDetail) {
         SQLiteDatabase db = helper.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(AccountDBHelper.USER_NAME, accName);
-        contentValues.put(AccountDBHelper.USER_ICON_ID, avatarIconId);
+        contentValues.put(AccountDBHelper.USER_NAME, accountDetail.user_name);
+        contentValues.put(AccountDBHelper.USER_ICON_ID, accountDetail.user_icon_id);
+        contentValues.put(AccountDBHelper.USER_CREATED, accountDetail.user_created);
+        contentValues.put(AccountDBHelper.USER_ACCOUNT_TYPPE, AccountDBHelper.ACCOUNT_DEFAULT);
         contentValues.put(AccountDBHelper.USER_BALANCE, 0);
 
         long id = db.insert(AccountDBHelper.TABLE_ACCOUNT, null, contentValues);
@@ -109,7 +113,14 @@ public class AccountDBAdapter {
     public List<AccountDetail> getAccountInfo() {
         SQLiteDatabase db = helper.getReadableDatabase();
 
-        String columns[] = {AccountDBHelper.USER_ID, AccountDBHelper.USER_NAME, AccountDBHelper.USER_BALANCE, AccountDBHelper.USER_ICON_ID};
+        String columns[] = {
+                AccountDBHelper.USER_ID,
+                AccountDBHelper.USER_NAME,
+                AccountDBHelper.USER_BALANCE,
+                AccountDBHelper.USER_ICON_ID,
+                AccountDBHelper.USER_ACCOUNT_TYPPE,
+                AccountDBHelper.USER_CREATED
+        };
         Cursor cursor = db.query(AccountDBHelper.TABLE_ACCOUNT, columns, null, null, null, null, null);
 
         List<AccountDetail> accInfo = new ArrayList<>();
@@ -119,17 +130,23 @@ public class AccountDBAdapter {
             int index2 = cursor.getColumnIndex(AccountDBHelper.USER_NAME);
             int index3 = cursor.getColumnIndex(AccountDBHelper.USER_BALANCE);
             int index4 = cursor.getColumnIndex(AccountDBHelper.USER_ICON_ID);
+            int index5 = cursor.getColumnIndex(AccountDBHelper.USER_ACCOUNT_TYPPE);
+            int index6 = cursor.getColumnIndex(AccountDBHelper.USER_CREATED);
 
-            int cid = cursor.getInt(index1);
-            String uname = cursor.getString(index2);
-            double ubalance = cursor.getDouble(index3);
-            int icId = cursor.getInt(index4);
+            int userId = cursor.getInt(index1);
+            String userName = cursor.getString(index2);
+            double userBalance = cursor.getDouble(index3);
+            int userIconId = cursor.getInt(index4);
+            int userAccountType = cursor.getInt(index5);
+            String userCreatedDate = cursor.getString(index6);
 
             AccountDetail accDetail = new AccountDetail();
-            accDetail.user_id = cid;
-            accDetail.user_name = uname;
-            accDetail.user_balance = ubalance;
-            accDetail.user_icon_id = icId;
+            accDetail.user_id = userId;
+            accDetail.user_name = userName;
+            accDetail.user_balance = userBalance;
+            accDetail.user_icon_id = userIconId;
+            accDetail.user_created = userCreatedDate;
+            accDetail.user_account_type = userAccountType;
 
             accInfo.add(accDetail);
         }
@@ -224,12 +241,17 @@ public class AccountDBAdapter {
 
     static class AccountDBHelper extends SQLiteOpenHelper {
 
+        // ACCOUNT TYPES
+        private static final int ACCOUNT_DEFAULT = 1;
+        private static final int ACCOUNT_ARCHIVED = 2;
+        private static final int ACCOUNT_TRASH = 3;
+
         // DATABASE DETAILS
         // ----------------------
 
         // DATABASES
         private static final String DATABASE_NAME = "AccountDb";
-        private static final int DATABASE_VERSION = 4;
+        private static final int DATABASE_VERSION = 5;
 
         // TABLES
         private static final String TABLE_ACCOUNT = "tableAccount";
@@ -240,6 +262,8 @@ public class AccountDBAdapter {
         private static final String USER_NAME = "userName";
         private static final String USER_BALANCE = "userBalance";
         private static final String USER_ICON_ID = "userIconId";
+        private static final String USER_CREATED = "userCreated";
+        private static final String USER_ACCOUNT_TYPPE = "userAccountType";
 
         private static final String TRANS_ID = "_tid";
         private static final String TRANS_AMOUNT = "transAmount";
@@ -251,6 +275,8 @@ public class AccountDBAdapter {
                                                            USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                                                            USER_NAME + " VARCHAR(255), " +
                                                            USER_ICON_ID + " INTEGER, " +
+                                                           USER_ACCOUNT_TYPPE + " INTEGER, " +
+                                                           USER_CREATED + " VARCHAR(30), "+
                                                            USER_BALANCE + " DOUBLE);";
 
         private static final String CREATE_TRANS_TABLE = "CREATE TABLE " + TABLE_TRANS + " (" +

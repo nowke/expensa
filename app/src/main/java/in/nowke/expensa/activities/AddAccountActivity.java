@@ -1,16 +1,24 @@
 package in.nowke.expensa.activities;
 
+import android.os.SystemClock;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.nowke.expensa.MainActivity;
@@ -18,6 +26,7 @@ import in.nowke.expensa.R;
 import in.nowke.expensa.adapters.AccountDBAdapter;
 import in.nowke.expensa.adapters.AvatarAdapter;
 import in.nowke.expensa.classes.AccountDetail;
+import in.nowke.expensa.classes.Utilities;
 import in.nowke.expensa.fragments.HomeFragment;
 
 public class AddAccountActivity extends AppCompatActivity {
@@ -28,11 +37,14 @@ public class AddAccountActivity extends AppCompatActivity {
     GridView mAvatarChooser;
     public static int clickedPos;
 
+    private static String LOG_TAG = "AddAccount";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         overridePendingTransition(R.anim.bottom_in, R.anim.top_out);
         setContentView(R.layout.activity_add_account);
+        
         clickedPos = -1;
         // ACTION BAR
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -107,19 +119,21 @@ public class AddAccountActivity extends AppCompatActivity {
         if (!accountName.isEmpty() && iconPosition != -1) {
             AccountDBAdapter helper;
             helper = new AccountDBAdapter(this);
-            long id = helper.addAccount(accountName, iconPosition);
+            String timeStamp = String.valueOf(Utilities.getCurrentTimeStamp());
 
             AccountDetail accountDetail = new AccountDetail();
             accountDetail.user_icon_id = iconPosition;
             accountDetail.user_name = accountName;
             accountDetail.user_balance = 0.0;
-            accountDetail.user_id = id;
-            HomeFragment.adapter.add(accountDetail, HomeFragment.adapter.getItemCount());
+            accountDetail.user_created = timeStamp;
 
+            long id = helper.addAccount(accountDetail);
+            accountDetail.user_id = id;
+
+            HomeFragment.adapter.add(accountDetail, HomeFragment.adapter.getItemCount());
             finish();
             overridePendingTransition(R.anim.top_in, R.anim.bottom_out);
         }
-
     }
 
     @Override

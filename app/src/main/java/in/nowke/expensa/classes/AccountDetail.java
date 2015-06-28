@@ -8,4 +8,6 @@ public class AccountDetail {
     public int user_icon_id;
     public String user_name;
     public Double user_balance;
+    public String user_created;
+    public int user_account_type;
 }

@@ -28,6 +28,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/appbar"
         android:orientation="vertical"
+        android:nestedScrollingEnabled="true"
+        tools:ignore="UnusedAttribute"
         android:padding="16dp">
 
         <android.support.design.widget.TextInputLayout
@@ -63,9 +65,7 @@
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:listSelector="#00000000"
-            android:stretchMode="columnWidth"
-            android:nestedScrollingEnabled="true"
-            tools:ignore="UnusedAttribute">
+            android:stretchMode="columnWidth">
 
         </GridView>
 

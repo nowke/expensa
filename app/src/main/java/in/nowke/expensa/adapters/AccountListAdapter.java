@@ -3,6 +3,7 @@ package in.nowke.expensa.adapters;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 import in.nowke.expensa.R;
 import in.nowke.expensa.classes.AccountDetail;
 import in.nowke.expensa.classes.AvatarIcons;
+import in.nowke.expensa.classes.Utilities;
 
 /**
  * Created by nav on 17/6/15.
@@ -51,10 +53,13 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
     @Override
     public void onBindViewHolder(AccountViewHolder holder, int position) {
         AccountDetail current = data.get(position);
+        Log.i("AddAccount", current.user_created);
+        String uDate = Utilities.getDate(Long.parseLong(current.user_created));
 
         holder.userName.setText(current.user_name);
         holder.userBalance.setText(current.user_balance.toString());
         holder.userId.setText(String.valueOf(current.user_id));
+        holder.userDate.setText(uDate);
 
         if (current.user_icon_id < 16) {
             drawable = MrVector.inflate(context.getResources(), avatarIcons.getAvatarIcon(current.user_icon_id));
@@ -88,6 +93,7 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
         TextView userName;
         TextView userBalance;
         TextView userId;
+        TextView userDate;
 
         public AccountViewHolder(View itemView) {
             super(itemView);
@@ -96,6 +102,7 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
             userName = (TextView) itemView.findViewById(R.id.userName);
             userBalance = (TextView) itemView.findViewById(R.id.userBalance);
             userId = (TextView) itemView.findViewById(R.id.userId);
+            userDate = (TextView) itemView.findViewById(R.id.userLastTransDate);
 
             itemView.setClickable(true);
 
