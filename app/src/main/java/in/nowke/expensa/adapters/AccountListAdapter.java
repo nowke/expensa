@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.telly.mrvector.MrVector;
 
+import org.w3c.dom.Text;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -32,26 +34,35 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
 
     private Drawable drawable;
     private TextDrawable textDrawable;
+    private View emptyView;
+
 
     List<AccountDetail> data = Collections.emptyList();
 
-    public AccountListAdapter(Context context, List<AccountDetail> data) {
+    public AccountListAdapter(Context context, List<AccountDetail> data, View emptyView) {
         this.context = context;
         inflater = LayoutInflater.from(context);
         this.data = data;
-        avatarIcons = new AvatarIcons(context);;
+        this.emptyView = emptyView;
+        avatarIcons = new AvatarIcons(context);
+        ;
     }
 
     @Override
     public AccountViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View view = inflater.inflate(R.layout.account_row, parent, false);
+        emptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
         AccountViewHolder holder = new AccountViewHolder(view);
         return holder;
+
     }
+
 
     @Override
     public void onBindViewHolder(AccountViewHolder holder, int position) {
+
+
         AccountDetail current = data.get(position);
         Log.i("AddAccount", current.user_created);
         String uDate = Utilities.getDate(Long.parseLong(current.user_created));
@@ -65,28 +76,31 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
         if (current.user_icon_id < 16) {
             drawable = MrVector.inflate(context.getResources(), avatarIcons.getAvatarIcon(current.user_icon_id));
             holder.userIcon.setImageDrawable(drawable);
-        }
-        else {
+        } else {
             textDrawable = avatarIcons.getDrawable(current.user_icon_id - 16, String.valueOf(current.user_name.charAt(0)));
 
             holder.userIcon.setImageDrawable(textDrawable);
         }
+
     }
 
     @Override
     public int getItemCount() {
-        return data.size();
+        return data == null ? 0 : data.size();
     }
 
     public void add(AccountDetail item, int position) {
         data.add(position, item);
         notifyItemInserted(position);
+        emptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
 
     public void remove(int position) {
         data.remove(position);
         notifyItemRemoved(position);
+        emptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
+
 
     class AccountViewHolder extends RecyclerView.ViewHolder {
 
@@ -111,4 +125,5 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
 
         }
     }
+
 }

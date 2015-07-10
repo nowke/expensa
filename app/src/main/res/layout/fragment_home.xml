@@ -9,11 +9,18 @@
         android:layout_marginTop="?attr/actionBarSize"
         android:id="@+id/accountListRecycler"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:clickable="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:longClickable="true" />
 
+    <TextView
+        android:id="@+id/empty_text_view"
+        android:textSize="64sp"
+        android:text="EMPTY"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </FrameLayout>

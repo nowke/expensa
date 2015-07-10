@@ -1,13 +1,10 @@
 package in.nowke.expensa.fragments;
 
 import android.app.Fragment;
-import android.content.Intent;
-import android.opengl.Visibility;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
@@ -25,14 +22,12 @@ import android.widget.TextView;
 import java.util.List;
 
 import in.nowke.expensa.R;
-import in.nowke.expensa.activities.AddAccountActivity;
 import in.nowke.expensa.adapters.AccountDBAdapter;
 import in.nowke.expensa.adapters.AccountListAdapter;
 import in.nowke.expensa.classes.AccountDetail;
 import in.nowke.expensa.classes.ActionCallback;
 import in.nowke.expensa.classes.ClickListener;
 import in.nowke.expensa.classes.DividerItemDecoration;
-import in.nowke.expensa.classes.Message;
 import in.nowke.expensa.classes.RecyclerTouchListener;
 
 /**
@@ -42,13 +37,12 @@ public class HomeFragment extends Fragment {
 
     public RecyclerView mAccountList;
     public static AccountListAdapter adapter;
+    private TextView emptyTextView;
 
     private ActionMode mActionMode;
     private int selectedItem;
 
     private int statusBarColor;
-
-    private static int userAccountType = 1;
 
     public HomeFragment() {}
 
@@ -56,9 +50,12 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
+
+        emptyTextView = (TextView) rootView.findViewById(R.id.empty_text_view);
+
         // ACCOUNT LIST RECYCLERVIEW
         mAccountList = (RecyclerView) rootView.findViewById(R.id.accountListRecycler);
-        adapter = new AccountListAdapter(getActivity(), getData(1));
+        adapter = new AccountListAdapter(getActivity(), getData(1), emptyTextView);
         mAccountList.setAdapter(adapter);
         mAccountList.addItemDecoration(new DividerItemDecoration(getActivity(), null));
         mAccountList.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -104,9 +101,9 @@ public class HomeFragment extends Fragment {
     }
 
     public void setAccountListAdapter(int accountType) {
-        adapter = new AccountListAdapter(getActivity(), getData(accountType));
+        adapter = new AccountListAdapter(getActivity(), getData(accountType), emptyTextView);
         mAccountList.setAdapter(adapter);
-        userAccountType = accountType;
+        emptyTextView.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
 
     private ActionCallback mActionModeCallback = new ActionCallback() {
