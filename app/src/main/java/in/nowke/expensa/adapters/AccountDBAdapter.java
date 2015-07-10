@@ -238,31 +238,27 @@ public class AccountDBAdapter {
     }
 
     public void trashAccount(int userId) {
-        SQLiteDatabase db = helper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(AccountDBHelper.USER_ACCOUNT_TYPE, AccountDBHelper.ACCOUNT_TRASH);
-        String[] whereArgs = {String.valueOf(userId)};
-        int count = db.update(AccountDBHelper.TABLE_ACCOUNT, contentValues, AccountDBHelper.USER_ID + " =? ", whereArgs);
+        changeUserAccountType(userId, AccountDBHelper.ACCOUNT_TRASH);
     }
 
     public void archiveAccount(int userId) {
-        SQLiteDatabase db = helper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(AccountDBHelper.USER_ACCOUNT_TYPE, AccountDBHelper.ACCOUNT_ARCHIVED);
-        String[] whereArgs = {String.valueOf(userId)};
-        int count = db.update(AccountDBHelper.TABLE_ACCOUNT, contentValues, AccountDBHelper.USER_ID + " =? ", whereArgs );
+       changeUserAccountType(userId, AccountDBHelper.ACCOUNT_ARCHIVED);
     }
 
     public void unarchiveAccount(int userId) {
-        SQLiteDatabase db = helper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(AccountDBHelper.USER_ACCOUNT_TYPE, AccountDBHelper.ACCOUNT_DEFAULT);
-        String[] whereArgs = {String.valueOf(userId)};
-        int count = db.update(AccountDBHelper.TABLE_ACCOUNT, contentValues, AccountDBHelper.USER_ID + " =? ", whereArgs );
+        changeUserAccountType(userId, AccountDBHelper.ACCOUNT_DEFAULT);
     }
 
     public void restoreAccount(int userId) {
-        unarchiveAccount(userId);
+        changeUserAccountType(userId, AccountDBHelper.ACCOUNT_DEFAULT);
+    }
+
+    public void changeUserAccountType(int userId, int accountType) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(AccountDBHelper.USER_ACCOUNT_TYPE, accountType);
+        String[] whereArgs = {String.valueOf(userId)};
+        int count = db.update(AccountDBHelper.TABLE_ACCOUNT, contentValues, AccountDBHelper.USER_ID + " =? ", whereArgs );
     }
 
     static class AccountDBHelper extends SQLiteOpenHelper {
@@ -301,7 +297,7 @@ public class AccountDBAdapter {
                                                            USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                                                            USER_NAME + " VARCHAR(255), " +
                                                            USER_ICON_ID + " INTEGER, " +
-                USER_ACCOUNT_TYPE + " INTEGER, " +
+                                                           USER_ACCOUNT_TYPE + " INTEGER, " +
                                                            USER_CREATED + " VARCHAR(30), "+
                                                            USER_BALANCE + " DOUBLE);";
 
@@ -322,7 +318,6 @@ public class AccountDBAdapter {
         AccountDBHelper (Context context) {
             super(context, DATABASE_NAME, null, DATABASE_VERSION);
             this.context = context;
-//            Message.message(context, "Constructor called");
         }
 
         @Override
@@ -330,7 +325,6 @@ public class AccountDBAdapter {
             try {
                 db.execSQL(CREATE_ACCOUNT_TABLE);
                 db.execSQL(CREATE_TRANS_TABLE);
-//                Message.message(context, "onCreate called");
             }
             catch (SQLException e) {
                 Message.message(context, "" + e);
@@ -340,7 +334,6 @@ public class AccountDBAdapter {
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             try {
-//                Message.message(context, "onUpgrade called");
                 db.execSQL(DROP_TABLE_ACC);
                 db.execSQL(DROP_TABLE_TRANSC);
                 onCreate(db);

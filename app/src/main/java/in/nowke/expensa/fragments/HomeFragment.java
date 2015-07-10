@@ -17,6 +17,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -37,7 +39,10 @@ public class HomeFragment extends Fragment {
 
     public RecyclerView mAccountList;
     public static AccountListAdapter adapter;
-    private TextView emptyTextView;
+
+    private LinearLayout emptyView;
+    private TextView emptyViewText;
+    private ImageView emptyViewImage;
 
     private ActionMode mActionMode;
     private int selectedItem;
@@ -51,11 +56,13 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
 
-        emptyTextView = (TextView) rootView.findViewById(R.id.empty_text_view);
+        emptyView = (LinearLayout) rootView.findViewById(R.id.empty_row_view);
+        emptyViewText = (TextView) rootView.findViewById(R.id.empty_row_text);
+        emptyViewImage = (ImageView) rootView.findViewById(R.id.empty_row_image);
 
         // ACCOUNT LIST RECYCLERVIEW
         mAccountList = (RecyclerView) rootView.findViewById(R.id.accountListRecycler);
-        adapter = new AccountListAdapter(getActivity(), getData(1), emptyTextView);
+        adapter = new AccountListAdapter(getActivity(), getData(1), emptyView);
         mAccountList.setAdapter(adapter);
         mAccountList.addItemDecoration(new DividerItemDecoration(getActivity(), null));
         mAccountList.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -97,13 +104,29 @@ public class HomeFragment extends Fragment {
 
     public List<AccountDetail> getData(int accountType) {
         AccountDBAdapter helper = new AccountDBAdapter(getActivity());
+
+        switch (accountType) {
+            case 1:
+                emptyViewText.setText("Accounts you add appear here");
+                emptyViewImage.setImageResource(R.drawable.ic_account_box_white_big);
+                break;
+            case 2:
+                emptyViewText.setText("Your archived accounts appear here");
+                emptyViewImage.setImageResource(R.drawable.ic_archive_white_big);
+                break;
+            case 3:
+                emptyViewText.setText("No accounts in Trash!");
+                emptyViewImage.setImageResource(R.drawable.ic_delete_white_big);
+                break;
+        }
+
         return helper.getAccountInfo(accountType);
     }
 
     public void setAccountListAdapter(int accountType) {
-        adapter = new AccountListAdapter(getActivity(), getData(accountType), emptyTextView);
+        adapter = new AccountListAdapter(getActivity(), getData(accountType), emptyView);
         mAccountList.setAdapter(adapter);
-        emptyTextView.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+        emptyView.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
 
     private ActionCallback mActionModeCallback = new ActionCallback() {

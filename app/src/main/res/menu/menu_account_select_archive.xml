@@ -4,10 +4,10 @@
 
     <item
         android:id="@+id/action_move_inbox"
-        android:icon="@drawable/ic_inbox_white"
+        android:icon="@drawable/ic_unarchive_white"
         android:orderInCategory="200"
         app:showAsAction="always|ifRoom"
-        android:title="@string/strInbox"/>
+        android:title="@string/strUnarchive"/>
 
     <item
         android:id="@+id/action_remover"

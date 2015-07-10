@@ -12,6 +12,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -69,7 +70,25 @@ public class MainActivity extends AppCompatActivity {
         if (homeFragment.finishActionMode()) {
             return;
         }
+        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            mDrawerLayout.closeDrawers();
+            return;
+        }
         super.onBackPressed();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_MENU) {
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                mDrawerLayout.closeDrawers();
+            }
+            else {
+                mDrawerLayout.openDrawer(GravityCompat.START);
+            }
+        }
+
+        return super.onKeyDown(keyCode, event);
     }
 
     /**
@@ -166,17 +185,14 @@ public class MainActivity extends AppCompatActivity {
                         switch (menuItem.getItemId()) {
                             case R.id.nav_home:
                                 homeFragment.setAccountListAdapter(1);
-//                                homeFragment.setFabVisibility(1);
                                 fabAddAccount.setVisibility(View.VISIBLE);
                                 break;
                             case R.id.nav_archives:
                                 homeFragment.setAccountListAdapter(2);
-//                                homeFragment.setFabVisibility(0);
                                 fabAddAccount.setVisibility(View.INVISIBLE);
                                 break;
                             case R.id.nav_trash:
                                 homeFragment.setAccountListAdapter(3);
-//                                homeFragment.setFabVisibility(0);
                                 fabAddAccount.setVisibility(View.INVISIBLE);
                                 break;
                         }
@@ -206,8 +222,7 @@ public class MainActivity extends AppCompatActivity {
 /**
 
  To Fix:
-    1. Landscape Toolbar vertical alignment
-    2. Add Account Choose Avatar - Reset happens when grid is out of focus
-    3. Refactor set status bar color
+    * Landscape Toolbar vertical alignment
+    * Refactor set status bar color
 
  */
