@@ -9,12 +9,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import in.nowke.expensa.classes.AccountDetail;
 import in.nowke.expensa.classes.AccountDetailInfo;
 import in.nowke.expensa.classes.Message;
-import in.nowke.expensa.classes.Utilities;
 
 /**
  * Created by nav on 1/5/15.
@@ -34,7 +32,7 @@ public class AccountDBAdapter {
         contentValues.put(AccountDBHelper.USER_NAME, accountDetail.user_name);
         contentValues.put(AccountDBHelper.USER_ICON_ID, accountDetail.user_icon_id);
         contentValues.put(AccountDBHelper.USER_CREATED, accountDetail.user_created);
-        contentValues.put(AccountDBHelper.USER_ACCOUNT_TYPPE, AccountDBHelper.ACCOUNT_DEFAULT);
+        contentValues.put(AccountDBHelper.USER_ACCOUNT_TYPE, AccountDBHelper.ACCOUNT_DEFAULT);
         contentValues.put(AccountDBHelper.USER_BALANCE, 0);
 
         long id = db.insert(AccountDBHelper.TABLE_ACCOUNT, null, contentValues);
@@ -110,7 +108,7 @@ public class AccountDBAdapter {
         return buffer.toString();
     }
 
-    public List<AccountDetail> getAccountInfo() {
+    public List<AccountDetail> getAccountInfo(int accountType) {
         SQLiteDatabase db = helper.getReadableDatabase();
 
         String columns[] = {
@@ -118,10 +116,10 @@ public class AccountDBAdapter {
                 AccountDBHelper.USER_NAME,
                 AccountDBHelper.USER_BALANCE,
                 AccountDBHelper.USER_ICON_ID,
-                AccountDBHelper.USER_ACCOUNT_TYPPE,
+                AccountDBHelper.USER_ACCOUNT_TYPE,
                 AccountDBHelper.USER_CREATED
         };
-        Cursor cursor = db.query(AccountDBHelper.TABLE_ACCOUNT, columns, null, null, null, null, null);
+        Cursor cursor = db.query(AccountDBHelper.TABLE_ACCOUNT, columns, AccountDBHelper.USER_ACCOUNT_TYPE + "=" + accountType, null, null, null, null);
 
         List<AccountDetail> accInfo = new ArrayList<>();
 
@@ -130,7 +128,7 @@ public class AccountDBAdapter {
             int index2 = cursor.getColumnIndex(AccountDBHelper.USER_NAME);
             int index3 = cursor.getColumnIndex(AccountDBHelper.USER_BALANCE);
             int index4 = cursor.getColumnIndex(AccountDBHelper.USER_ICON_ID);
-            int index5 = cursor.getColumnIndex(AccountDBHelper.USER_ACCOUNT_TYPPE);
+            int index5 = cursor.getColumnIndex(AccountDBHelper.USER_ACCOUNT_TYPE);
             int index6 = cursor.getColumnIndex(AccountDBHelper.USER_CREATED);
 
             int userId = cursor.getInt(index1);
@@ -239,6 +237,34 @@ public class AccountDBAdapter {
         int count2 = db.delete(AccountDBHelper.TABLE_TRANS, AccountDBHelper.USER_ID + "=" + userId, null);
     }
 
+    public void trashAccount(int userId) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(AccountDBHelper.USER_ACCOUNT_TYPE, AccountDBHelper.ACCOUNT_TRASH);
+        String[] whereArgs = {String.valueOf(userId)};
+        int count = db.update(AccountDBHelper.TABLE_ACCOUNT, contentValues, AccountDBHelper.USER_ID + " =? ", whereArgs);
+    }
+
+    public void archiveAccount(int userId) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(AccountDBHelper.USER_ACCOUNT_TYPE, AccountDBHelper.ACCOUNT_ARCHIVED);
+        String[] whereArgs = {String.valueOf(userId)};
+        int count = db.update(AccountDBHelper.TABLE_ACCOUNT, contentValues, AccountDBHelper.USER_ID + " =? ", whereArgs );
+    }
+
+    public void unarchiveAccount(int userId) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(AccountDBHelper.USER_ACCOUNT_TYPE, AccountDBHelper.ACCOUNT_DEFAULT);
+        String[] whereArgs = {String.valueOf(userId)};
+        int count = db.update(AccountDBHelper.TABLE_ACCOUNT, contentValues, AccountDBHelper.USER_ID + " =? ", whereArgs );
+    }
+
+    public void restoreAccount(int userId) {
+        unarchiveAccount(userId);
+    }
+
     static class AccountDBHelper extends SQLiteOpenHelper {
 
         // ACCOUNT TYPES
@@ -263,7 +289,7 @@ public class AccountDBAdapter {
         private static final String USER_BALANCE = "userBalance";
         private static final String USER_ICON_ID = "userIconId";
         private static final String USER_CREATED = "userCreated";
-        private static final String USER_ACCOUNT_TYPPE = "userAccountType";
+        private static final String USER_ACCOUNT_TYPE = "userAccountType";
 
         private static final String TRANS_ID = "_tid";
         private static final String TRANS_AMOUNT = "transAmount";
@@ -275,7 +301,7 @@ public class AccountDBAdapter {
                                                            USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                                                            USER_NAME + " VARCHAR(255), " +
                                                            USER_ICON_ID + " INTEGER, " +
-                                                           USER_ACCOUNT_TYPPE + " INTEGER, " +
+                USER_ACCOUNT_TYPE + " INTEGER, " +
                                                            USER_CREATED + " VARCHAR(30), "+
                                                            USER_BALANCE + " DOUBLE);";
 

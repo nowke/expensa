@@ -33,10 +33,10 @@ public class Utilities {
     public static String getDate(long time) {
         int year = getYear(time);
         if (year < getCurrentYear()) {
-            return String.valueOf(year);
+            return getDateFromFormat(time, "MMM, yyyy");
         }
         else {
-            return getDateFromFormat(time, "MMM dd, yyyy");
+            return getDateFromFormat(time, "MMM dd");
         }
     }
 }

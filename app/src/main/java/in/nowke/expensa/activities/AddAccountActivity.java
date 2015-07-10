@@ -44,7 +44,7 @@ public class AddAccountActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         overridePendingTransition(R.anim.bottom_in, R.anim.top_out);
         setContentView(R.layout.activity_add_account);
-        
+
         clickedPos = -1;
         // ACTION BAR
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -126,6 +126,7 @@ public class AddAccountActivity extends AppCompatActivity {
             accountDetail.user_name = accountName;
             accountDetail.user_balance = 0.0;
             accountDetail.user_created = timeStamp;
+            accountDetail.user_account_type = 1;
 
             long id = helper.addAccount(accountDetail);
             accountDetail.user_id = id;

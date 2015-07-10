@@ -59,6 +59,7 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
         holder.userName.setText(current.user_name);
         holder.userBalance.setText(current.user_balance.toString());
         holder.userId.setText(String.valueOf(current.user_id));
+        holder.userAccountType.setText(String.valueOf(current.user_account_type));
         holder.userDate.setText(uDate);
 
         if (current.user_icon_id < 16) {
@@ -94,6 +95,7 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
         TextView userBalance;
         TextView userId;
         TextView userDate;
+        TextView userAccountType;
 
         public AccountViewHolder(View itemView) {
             super(itemView);
@@ -103,6 +105,7 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
             userBalance = (TextView) itemView.findViewById(R.id.userBalance);
             userId = (TextView) itemView.findViewById(R.id.userId);
             userDate = (TextView) itemView.findViewById(R.id.userLastTransDate);
+            userAccountType = (TextView) itemView.findViewById(R.id.userAccountType);
 
             itemView.setClickable(true);
 

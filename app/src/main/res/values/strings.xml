@@ -27,6 +27,9 @@
     <string name="strDelete">Delete</string>
     <string name="strEdit">Edit</string>
     <string name="strArchive">Archive</string>
+    <string name="strInbox">Move to Inbox</string>
+    <string name="strRestore">Restore</string>
+    <string name="strDeleteForever">Delete Forever</string>
 
     <integer name="activity_anim_duration">200</integer>
 </resources>

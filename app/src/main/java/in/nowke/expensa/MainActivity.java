@@ -7,38 +7,18 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.ActionMode;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import in.nowke.expensa.activities.AddAccountActivity;
-import in.nowke.expensa.adapters.AccountDBAdapter;
-import in.nowke.expensa.adapters.AccountListAdapter;
-import in.nowke.expensa.classes.AccountDetail;
-import in.nowke.expensa.classes.ActionCallback;
-import in.nowke.expensa.classes.ClickListener;
-import in.nowke.expensa.classes.DividerItemDecoration;
-import in.nowke.expensa.classes.Message;
-import in.nowke.expensa.classes.RecyclerTouchListener;
 import in.nowke.expensa.fragments.HomeFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -46,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
     HomeFragment homeFragment;
-
+    private FloatingActionButton fabAddAccount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +93,16 @@ public class MainActivity extends AppCompatActivity {
         if (navigationView != null) {
             setupDrawerContent(navigationView);
         }
+
+        // FAB
+        fabAddAccount = (FloatingActionButton) findViewById(R.id.fab_add_account);
+        fabAddAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(getApplicationContext(), AddAccountActivity.class));
+            }
+        });
+
     }
 
     /**
@@ -173,6 +163,23 @@ public class MainActivity extends AppCompatActivity {
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
                         menuItem.setChecked(true);
                         mDrawerLayout.closeDrawers();
+                        switch (menuItem.getItemId()) {
+                            case R.id.nav_home:
+                                homeFragment.setAccountListAdapter(1);
+//                                homeFragment.setFabVisibility(1);
+                                fabAddAccount.setVisibility(View.VISIBLE);
+                                break;
+                            case R.id.nav_archives:
+                                homeFragment.setAccountListAdapter(2);
+//                                homeFragment.setFabVisibility(0);
+                                fabAddAccount.setVisibility(View.INVISIBLE);
+                                break;
+                            case R.id.nav_trash:
+                                homeFragment.setAccountListAdapter(3);
+//                                homeFragment.setFabVisibility(0);
+                                fabAddAccount.setVisibility(View.INVISIBLE);
+                                break;
+                        }
                         return true;
                     }
                 });

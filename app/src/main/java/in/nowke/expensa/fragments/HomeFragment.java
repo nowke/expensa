@@ -1,12 +1,14 @@
 package in.nowke.expensa.fragments;
 
 import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.opengl.Visibility;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.view.ActionMode;
 import android.support.v7.widget.LinearLayoutManager;
@@ -40,12 +42,13 @@ public class HomeFragment extends Fragment {
 
     public RecyclerView mAccountList;
     public static AccountListAdapter adapter;
-    private FloatingActionButton fabAddAccount;
 
     private ActionMode mActionMode;
     private int selectedItem;
 
     private int statusBarColor;
+
+    private static int userAccountType = 1;
 
     public HomeFragment() {}
 
@@ -55,7 +58,7 @@ public class HomeFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_home, container, false);
         // ACCOUNT LIST RECYCLERVIEW
         mAccountList = (RecyclerView) rootView.findViewById(R.id.accountListRecycler);
-        adapter = new AccountListAdapter(getActivity(), getData());
+        adapter = new AccountListAdapter(getActivity(), getData(1));
         mAccountList.setAdapter(adapter);
         mAccountList.addItemDecoration(new DividerItemDecoration(getActivity(), null));
         mAccountList.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -82,14 +85,6 @@ public class HomeFragment extends Fragment {
             }
         }));
 
-        // FAB
-        fabAddAccount = (FloatingActionButton) rootView.findViewById(R.id.fab_add_account);
-        fabAddAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startActivity(new Intent(getActivity(), AddAccountActivity.class));
-            }
-        });
 
         return rootView;
     }
@@ -103,9 +98,15 @@ public class HomeFragment extends Fragment {
     }
 
 
-    public List<AccountDetail> getData() {
+    public List<AccountDetail> getData(int accountType) {
         AccountDBAdapter helper = new AccountDBAdapter(getActivity());
-        return helper.getAccountInfo();
+        return helper.getAccountInfo(accountType);
+    }
+
+    public void setAccountListAdapter(int accountType) {
+        adapter = new AccountListAdapter(getActivity(), getData(accountType));
+        mAccountList.setAdapter(adapter);
+        userAccountType = accountType;
     }
 
     private ActionCallback mActionModeCallback = new ActionCallback() {
@@ -126,10 +127,26 @@ public class HomeFragment extends Fragment {
                 //set your gray color
                 getActivity().getWindow().setStatusBarColor(0xFF555555);
             }
+
             MenuInflater inflater = mode.getMenuInflater();
-            inflater.inflate(R.menu.menu_account_select, menu);
+            TextView uAccType = (TextView) mClickedView.findViewById(R.id.userAccountType);
+            int accType = Integer.parseInt(uAccType.getText().toString());
+            switch (accType) {
+                case 1:
+                    inflater.inflate(R.menu.menu_account_select_home, menu);
+                    break;
+                case 2:
+                    inflater.inflate(R.menu.menu_account_select_archive, menu);
+                    break;
+                case 3:
+                    inflater.inflate(R.menu.menu_account_select_trash, menu);
+                    break;
+            }
+
             return true;
         }
+
+
 
         @Override
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
@@ -140,15 +157,46 @@ public class HomeFragment extends Fragment {
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             int id = item.getItemId();
 
+            TextView userIdText = (TextView) mClickedView.findViewById(R.id.userId);
+            int uid = Integer.parseInt(userIdText.getText().toString());
+            AccountDBAdapter helper = new AccountDBAdapter(getActivity());
+
+            CoordinatorLayout coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.main_content);
+
             if (id == R.id.action_remover) {
-                TextView userIdText = (TextView) mClickedView.findViewById(R.id.userId);
-                int uid = Integer.parseInt(userIdText.getText().toString());
-                AccountDBAdapter helper = new AccountDBAdapter(getActivity());
+                helper.trashAccount(uid);
+                adapter.remove(selectedItem);
+                mode.finish();
+                Snackbar.make(coordinatorLayout, "Deleted", Snackbar.LENGTH_SHORT).show();
+                return true;
+            }
+
+            if (id == R.id.action_acrhive) {
+                helper.archiveAccount(uid);
+                adapter.remove(selectedItem);
+                mode.finish();
+                return true;
+            }
+
+            if (id == R.id.action_move_inbox) {
+                helper.unarchiveAccount(uid);
+                adapter.remove(selectedItem);
+                mode.finish();
+                return true;
+            }
+
+            if (id == R.id.action_restore) {
+                helper.restoreAccount(uid);
+                adapter.remove(selectedItem);
+                mode.finish();
+                return true;
+            }
+
+            if (id == R.id.action_delete) {
                 helper.removeAccount(uid);
                 adapter.remove(selectedItem);
                 mode.finish();
                 return true;
-
             }
 
             return false;
