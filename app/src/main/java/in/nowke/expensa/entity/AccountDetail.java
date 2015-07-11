@@ -1,4 +1,4 @@
-package in.nowke.expensa.classes;
+package in.nowke.expensa.entity;
 
 /**
  * Created by nav on 1/5/15.

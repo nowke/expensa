@@ -26,6 +26,22 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="in.nowke.expensa.MainActivity" />
         </activity>
+        <activity
+            android:name=".activities.AccountDetailActivity"
+            android:label="@string/title_activity_account_detail"
+            android:parentActivityName=".MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="in.nowke.expensa.MainActivity" />
+        </activity>
+        <activity
+            android:name=".activities.AddTransactionActivity"
+            android:label="@string/title_activity_add_transaction"
+            android:parentActivityName=".activities.AccountDetailActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="in.nowke.expensa.activities.AccountDetailActivity" />
+        </activity>
     </application>
 
 </manifest>

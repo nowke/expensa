@@ -10,8 +10,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-import in.nowke.expensa.classes.AccountDetail;
-import in.nowke.expensa.classes.AccountDetailInfo;
+import in.nowke.expensa.entity.AccountDetail;
+import in.nowke.expensa.entity.TransactionDetail;
 import in.nowke.expensa.classes.Message;
 
 /**
@@ -40,26 +40,26 @@ public class AccountDBAdapter {
         return id;
     }
 
-    public long addTransaction(Double transAmount, int transType, int userId, String transDesc, Double personBalance) {
+    public long addTransaction (TransactionDetail transactionDetail) {
         SQLiteDatabase db = helper.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
-        contentValues.put(AccountDBHelper.USER_ID, userId);
-        contentValues.put(AccountDBHelper.TRANS_AMOUNT, transAmount);
-        contentValues.put(AccountDBHelper.TRANS_TYPE, transType);
-        contentValues.put(AccountDBHelper.TRANS_DESC, transDesc);
+        contentValues.put(AccountDBHelper.USER_ID, transactionDetail.userId);
+        contentValues.put(AccountDBHelper.TRANS_AMOUNT, transactionDetail.transAmount);
+        contentValues.put(AccountDBHelper.TRANS_TYPE, transactionDetail.transType);
+        contentValues.put(AccountDBHelper.TRANS_DESC, transactionDetail.transDesc);
+        contentValues.put(AccountDBHelper.TRANS_DATE, transactionDetail.transDate);
 
         long id = db.insert(AccountDBHelper.TABLE_TRANS, null, contentValues);
 
-        Double newBalance = calcBalance(userId);
+        Double newBalance = calcBalance(transactionDetail.userId);
 
         ContentValues contentValues1 = new ContentValues();
         contentValues1.put(AccountDBHelper.USER_BALANCE, newBalance);
-        db.update(AccountDBHelper.TABLE_ACCOUNT, contentValues1, AccountDBHelper.USER_ID + "=" + userId, null);
+        db.update(AccountDBHelper.TABLE_ACCOUNT, contentValues1, AccountDBHelper.USER_ID + "=" + transactionDetail.userId, null);
 
         return id;
     }
-
 
     public String getAllData() {
         SQLiteDatabase db = helper.getReadableDatabase();
@@ -152,27 +152,33 @@ public class AccountDBAdapter {
         return accInfo;
     }
 
-    public List<AccountDetailInfo> getTransInfo(int userId) {
+    public List<TransactionDetail> getTransInfo(int userId) {
         SQLiteDatabase db = helper.getReadableDatabase();
 
-        String columns[] = {AccountDBHelper.TRANS_DESC, AccountDBHelper.TRANS_AMOUNT, AccountDBHelper.TRANS_TYPE};
+        String columns[] = {AccountDBHelper.TRANS_DESC, AccountDBHelper.TRANS_AMOUNT, AccountDBHelper.TRANS_TYPE, AccountDBHelper.TRANS_DATE, AccountDBHelper.TRANS_ID};
         Cursor cursor = db.query(AccountDBHelper.TABLE_TRANS, columns, AccountDBHelper.USER_ID + "=" + userId, null, null, null, null);
 
-        List<AccountDetailInfo> transInfo = new ArrayList<>();
+        List<TransactionDetail> transInfo = new ArrayList<>();
 
         while (cursor.moveToNext()) {
             int index1 = cursor.getColumnIndex(AccountDBHelper.TRANS_DESC);
             int index2 = cursor.getColumnIndex(AccountDBHelper.TRANS_AMOUNT);
             int index3 = cursor.getColumnIndex(AccountDBHelper.TRANS_TYPE);
+            int index4 = cursor.getColumnIndex(AccountDBHelper.TRANS_DATE);
+            int index5 = cursor.getColumnIndex(AccountDBHelper.TRANS_ID);
 
             String tDesc = cursor.getString(index1);
             Double tAmount = cursor.getDouble(index2);
             int tType = cursor.getInt(index3);
+            String tDate = cursor.getString(index4);
+            int tId = cursor.getInt(index5);
 
-            AccountDetailInfo transDetail = new AccountDetailInfo();
+            TransactionDetail transDetail = new TransactionDetail();
             transDetail.transType = tType;
             transDetail.transDesc = tDesc;
             transDetail.transAmount = tAmount;
+            transDetail.transDate = tDate;
+            transDetail.transId = tId;
 
             transInfo.add(transDetail);
         }
@@ -268,12 +274,16 @@ public class AccountDBAdapter {
         private static final int ACCOUNT_ARCHIVED = 2;
         private static final int ACCOUNT_TRASH = 3;
 
+        // TRANSACTION TYPES
+        private static final int TRANS_CREDIT = 0;
+        private static final int TRANS_DEBIT = 1;
+
         // DATABASE DETAILS
         // ----------------------
 
         // DATABASES
         private static final String DATABASE_NAME = "AccountDb";
-        private static final int DATABASE_VERSION = 5;
+        private static final int DATABASE_VERSION = 6;
 
         // TABLES
         private static final String TABLE_ACCOUNT = "tableAccount";
@@ -291,6 +301,7 @@ public class AccountDBAdapter {
         private static final String TRANS_AMOUNT = "transAmount";
         private static final String TRANS_TYPE = "transType";
         private static final String TRANS_DESC = "transDesc";
+        private static final String TRANS_DATE = "transDate";
 
         // CREATE DB STATEMENTS
         private static final String CREATE_ACCOUNT_TABLE = "CREATE TABLE " + TABLE_ACCOUNT + " (" +
@@ -307,6 +318,7 @@ public class AccountDBAdapter {
                                                          TRANS_AMOUNT + " DOUBLE, " +
                                                          TRANS_DESC + " VARCHAR(255), " +
                                                          TRANS_TYPE + " INTEGER, " +
+                                                         TRANS_DATE + " VARCHAR(30), " +
                                                          "FOREIGN KEY (" + USER_ID + ") REFERENCES " + TABLE_ACCOUNT + " (" + USER_ID + "));";
 
         // DROP TABLE

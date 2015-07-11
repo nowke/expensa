@@ -9,7 +9,7 @@
     <color name="colorPrimaryDark">#DA4453</color>
     <color name="colorAccent">#4A89DC</color>
 
-    <color name="colorHighlight">#EEEEEE</color>
+    <color name="colorHighlight">#E0E0E0</color>
     <color name="colorPrimaryText">#212121</color>
     <color name="colorSecondaryText">#727272</color>
     <color name="colorIcons">#FFFFFF</color>
@@ -35,4 +35,7 @@
     <color name="colorMaterialBrown">#795548</color>
     <color name="colorMaterialGrey">#9E9E9E</color>
     <color name="colorMaterialBlueGrey">#607D8B</color>
+
+    <color name="mdtp_accent_color">#4A89DC</color>
+    <color name="mdtp_accent_color_dark">#1976D2</color>
 </resources>

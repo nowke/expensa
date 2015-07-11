@@ -1,31 +1,21 @@
 package in.nowke.expensa.activities;
 
-import android.os.SystemClock;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.format.DateFormat;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
 
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
-
 import de.hdodenhof.circleimageview.CircleImageView;
-import in.nowke.expensa.MainActivity;
 import in.nowke.expensa.R;
 import in.nowke.expensa.adapters.AccountDBAdapter;
 import in.nowke.expensa.adapters.AvatarAdapter;
-import in.nowke.expensa.classes.AccountDetail;
+import in.nowke.expensa.entity.AccountDetail;
 import in.nowke.expensa.classes.Utilities;
 import in.nowke.expensa.fragments.HomeFragment;
 

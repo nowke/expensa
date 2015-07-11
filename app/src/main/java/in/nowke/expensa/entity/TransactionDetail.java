@@ -1,11 +1,13 @@
-package in.nowke.expensa.classes;
+package in.nowke.expensa.entity;
 
 /**
  * Created by nav on 29/4/15.
  */
-public class AccountDetailInfo {
+public class TransactionDetail {
+    public int userId;
     public int transId;
     public int transType;
     public String transDesc;
     public Double transAmount;
+    public String transDate;
 }

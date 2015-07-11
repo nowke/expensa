@@ -12,14 +12,12 @@ import android.widget.TextView;
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.telly.mrvector.MrVector;
 
-import org.w3c.dom.Text;
-
 import java.util.Collections;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.nowke.expensa.R;
-import in.nowke.expensa.classes.AccountDetail;
+import in.nowke.expensa.entity.AccountDetail;
 import in.nowke.expensa.classes.AvatarIcons;
 import in.nowke.expensa.classes.Utilities;
 
@@ -64,7 +62,6 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
 
 
         AccountDetail current = data.get(position);
-        Log.i("AddAccount", current.user_created);
         String uDate = Utilities.getDate(Long.parseLong(current.user_created));
 
         holder.userName.setText(current.user_name);

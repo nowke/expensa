@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
             else {
                 mDrawerLayout.openDrawer(GravityCompat.START);
             }
+            return true;
         }
 
         return super.onKeyDown(keyCode, event);

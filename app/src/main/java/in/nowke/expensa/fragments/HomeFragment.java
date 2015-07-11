@@ -1,6 +1,7 @@
 package in.nowke.expensa.fragments;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -24,9 +25,10 @@ import android.widget.TextView;
 import java.util.List;
 
 import in.nowke.expensa.R;
+import in.nowke.expensa.activities.AccountDetailActivity;
 import in.nowke.expensa.adapters.AccountDBAdapter;
 import in.nowke.expensa.adapters.AccountListAdapter;
-import in.nowke.expensa.classes.AccountDetail;
+import in.nowke.expensa.entity.AccountDetail;
 import in.nowke.expensa.classes.ActionCallback;
 import in.nowke.expensa.classes.ClickListener;
 import in.nowke.expensa.classes.DividerItemDecoration;
@@ -73,6 +75,11 @@ public class HomeFragment extends Fragment {
                     // Finished Action Mode
                     return;
                 }
+                TextView userIdText = (TextView) view.findViewById(R.id.userId);
+                Intent intent = new Intent(getActivity(), AccountDetailActivity.class);
+                intent.putExtra("USER_ID", userIdText.getText().toString());
+
+                startActivity(intent);
             }
 
             @Override
