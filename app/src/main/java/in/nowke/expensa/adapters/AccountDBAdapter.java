@@ -160,6 +160,14 @@ public class AccountDBAdapter {
 
         List<TransactionDetail> transInfo = new ArrayList<>();
 
+        Double userBalance = getBalanceById(userId);
+        String userCreated = getCreatedDateById(userId);
+        TransactionDetail userHeader = new TransactionDetail();
+        userHeader.userBalance = userBalance;
+        userHeader.userCreated = userCreated;
+
+        transInfo.add(userHeader);
+
         while (cursor.moveToNext()) {
             int index1 = cursor.getColumnIndex(AccountDBHelper.TRANS_DESC);
             int index2 = cursor.getColumnIndex(AccountDBHelper.TRANS_AMOUNT);
@@ -221,6 +229,20 @@ public class AccountDBAdapter {
             uName = cursor.getString(index);
         }
         return uName;
+    }
+
+    public String getCreatedDateById(int userId) {
+        SQLiteDatabase db = helper.getReadableDatabase();
+
+        String columns[] = {AccountDBHelper.USER_ID, AccountDBHelper.USER_CREATED};
+        Cursor cursor = db.query(AccountDBHelper.TABLE_ACCOUNT, columns, AccountDBHelper.USER_ID + "=" + userId, null, null, null, null);
+
+        String uCreated = null;
+        while (cursor.moveToNext()) {
+            int index = cursor.getColumnIndex(AccountDBHelper.USER_CREATED);
+            uCreated = cursor.getString(index);
+        }
+        return uCreated;
     }
 
     public Double getBalanceById(int userId) {

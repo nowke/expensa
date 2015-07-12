@@ -11,16 +11,19 @@ import java.util.Collections;
 import java.util.List;
 
 import in.nowke.expensa.R;
+import in.nowke.expensa.classes.Utilities;
 import in.nowke.expensa.entity.TransactionDetail;
 
 /**
  * Created by nav on 11/7/15.
  */
-public class TransactionListAdapter extends RecyclerView.Adapter<TransactionListAdapter.TransactionViewHolder> {
+public class TransactionListAdapter extends RecyclerView.Adapter<TransactionListAdapter.MainViewHolder> {
 
     private LayoutInflater inflater;
     private Context context;
 
+    private  static final int ITEM_TYPE_HEADER = 1;
+    private  static final int ITEM_NORMAL = 2;
 
     List<TransactionDetail> data = Collections.emptyList();
 
@@ -31,23 +34,56 @@ public class TransactionListAdapter extends RecyclerView.Adapter<TransactionList
     }
 
     @Override
-    public TransactionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MainViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = inflater.inflate(R.layout.transaction_row, parent, false);
-        TransactionViewHolder holder = new TransactionViewHolder(view);
-        return holder;
+       switch (viewType) {
+           case ITEM_NORMAL:
+               View view = inflater.inflate(R.layout.transaction_row, parent, false);
+               TransactionViewHolder holder = new TransactionViewHolder(view);
+               return holder;
+           case ITEM_TYPE_HEADER:
+               View viewHeader = inflater.inflate(R.layout.transaction_row_header, parent, false);
+               UserHeaderViewHolder headerViewHolder = new UserHeaderViewHolder(viewHeader);
+               return headerViewHolder;
+           default:
+               return null;
+       }
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if (position == 0) {
+            return ITEM_TYPE_HEADER;
+        }
+        else {
+            return ITEM_NORMAL;
+        }
+    }
 
     @Override
-    public void onBindViewHolder(TransactionViewHolder holder, int position) {
-        TransactionDetail current = data.get(position);
+    public void onBindViewHolder(MainViewHolder holder, int position) {
 
-        holder.transTitle.setText(current.transDesc);
-        holder.transId.setText(String.valueOf(current.transId));
-        holder.transAmount.setText(String.valueOf(current.transAmount));
-        holder.transDate.setText(current.transDate);
+        switch (getItemViewType(position)) {
+            case ITEM_NORMAL:
+                TransactionDetail current = data.get(position);
+                TransactionViewHolder itemNormalHolder = (TransactionViewHolder) holder;
 
+                itemNormalHolder.transTitle.setText(current.transDesc);
+                itemNormalHolder.transId.setText(String.valueOf(current.transId));
+                itemNormalHolder.transAmount.setText(String.valueOf(current.transAmount));
+                itemNormalHolder.transDate.setText(current.transDate);
+                break;
+
+            case ITEM_TYPE_HEADER:
+                TransactionDetail userHeader = data.get(position);
+                UserHeaderViewHolder headerViewHolder = (UserHeaderViewHolder) holder;
+
+                String uDate = Utilities.getDate(Long.parseLong(userHeader.userCreated));
+
+                headerViewHolder.userBalance.setText(String.valueOf(userHeader.userBalance));
+                headerViewHolder.userCreated.setText(uDate);
+                break;
+        }
     }
 
     @Override
@@ -65,8 +101,27 @@ public class TransactionListAdapter extends RecyclerView.Adapter<TransactionList
         notifyItemRemoved(position);
     }
 
+    class MainViewHolder extends RecyclerView.ViewHolder {
 
-    class TransactionViewHolder extends RecyclerView.ViewHolder {
+        public MainViewHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
+    class UserHeaderViewHolder extends MainViewHolder {
+
+        TextView userCreated;
+        TextView userBalance;
+
+        public UserHeaderViewHolder(View itemView) {
+            super(itemView);
+
+            userCreated = (TextView) itemView.findViewById(R.id.userCreatedHeader);
+            userBalance = (TextView) itemView.findViewById(R.id.userBalanceHeader);
+        }
+    }
+
+    class TransactionViewHolder extends MainViewHolder {
 
         TextView transTitle;
         TextView transDate;

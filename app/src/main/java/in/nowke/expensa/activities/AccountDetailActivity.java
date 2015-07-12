@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -23,9 +24,9 @@ public class AccountDetailActivity extends AppCompatActivity {;
 
     private TransactionListAdapter adapter;
 
-    private RecyclerView recyclerView;
+    private RecyclerView mTransactionList;
 
-    private FloatingActionButton fab;
+    private FloatingActionButton fabAddTransaction;
 
     String userID;
 
@@ -40,6 +41,14 @@ public class AccountDetailActivity extends AppCompatActivity {;
         initToolbar();
         initViews();
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_account_detail, menu);
+        return true;
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -65,8 +74,9 @@ public class AccountDetailActivity extends AppCompatActivity {;
 
         CollapsingToolbarLayout collapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle("RecyclerViewActivity");
+        collapsingToolbar.setTitle("Account Detail");
 
+//        collapsingToolbar.setBackgroundColor(getResources().getColor(R.color.material_blue_grey_800));
         fixApi21ToolBarBug(toolbar);
 
     }
@@ -90,12 +100,12 @@ public class AccountDetailActivity extends AppCompatActivity {;
 
 
         adapter = new TransactionListAdapter(this, getData());
-        recyclerView = (RecyclerView) findViewById(R.id.rv_product);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mTransactionList = (RecyclerView) findViewById(R.id.transactionListRecycler);
+        mTransactionList.setAdapter(adapter);
+        mTransactionList.setLayoutManager(new LinearLayoutManager(this));
 
-        fab = (FloatingActionButton) findViewById(R.id.myfab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        fabAddTransaction = (FloatingActionButton) findViewById(R.id.fabAddTransaction);
+        fabAddTransaction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), AddTransactionActivity.class);

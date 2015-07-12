@@ -32,7 +32,7 @@
     <string name="strDeleteForever">Delete Forever</string>
 
     <integer name="activity_anim_duration">200</integer>
-    <string name="title_activity_account_detail">AccountDetailActivity</string>
+    <string name="title_activity_account_detail">Account Detail</string>
     <string name="title_activity_add_transaction">Add Transaction</string>
     <string name="action_add_transaction">Add Transaction</string>
 </resources>

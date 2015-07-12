@@ -5,6 +5,10 @@ package in.nowke.expensa.entity;
  */
 public class TransactionDetail {
     public int userId;
+    public Double userBalance;
+    public String userCreated;
+    public String userName;
+
     public int transId;
     public int transType;
     public String transDesc;
