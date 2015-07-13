@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="avatar_1">#FF8A80</color>
+    <color name="avatar_2">#B9F6CA</color>
+    <color name="avatar_3">#80D8FF</color>
+    <color name="avatar_4">#84FFFF</color>
+    <color name="avatar_5">#FFFF8D</color>
+    <color name="avatar_6">#FF8A80</color>
+    <color name="avatar_7">#B9F6CA</color>
+    <color name="avatar_8">#80D8FF</color>
+    <color name="avatar_9">#B388FF</color>
+    <color name="avatar_10">#FFFF8D</color>
+    <color name="avatar_11">#8C9EFF</color>
+    <color name="avatar_12">#FFFF8D</color>
+    <color name="avatar_13">#448AFF</color>
+    <color name="avatar_14">#B388FF</color>
+    <color name="avatar_15">#FF80AB</color>
+    <color name="avatar_16">#B388FF</color>
+</resources>

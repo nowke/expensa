@@ -65,6 +65,25 @@ public class AvatarIcons {
             R.color.colorMaterialBlueGrey,
     };
 
+    private int[] avatarIconBackgroundColors = {
+            R.color.avatar_1,
+            R.color.avatar_2,
+            R.color.avatar_3,
+            R.color.avatar_4,
+            R.color.avatar_5,
+            R.color.avatar_6,
+            R.color.avatar_7,
+            R.color.avatar_8,
+            R.color.avatar_9,
+            R.color.avatar_10,
+            R.color.avatar_11,
+            R.color.avatar_12,
+            R.color.avatar_13,
+            R.color.avatar_14,
+            R.color.avatar_15,
+            R.color.avatar_16,
+    };
+
     public AvatarIcons(Context context) {
         this.context = context;
         generator = ColorGenerator.MATERIAL;
@@ -73,14 +92,6 @@ public class AvatarIcons {
         for (int Drawable: svg_drawables) {
             mAvatars.add(Drawable);
         }
-
-//        for (int materialColor : materialColors) {
-//            drawable = TextDrawable.builder()
-//                    .beginConfig().width(64).height(64)
-//                    .endConfig()
-//                    .buildRect("A", context.getResources().getColor(materialColor));
-//            mDrawables.add(drawable);
-//        }
     }
 
     public int getAvatarCount() {
@@ -96,7 +107,6 @@ public class AvatarIcons {
     }
 
     public TextDrawable getDrawable(int pos, String txt) {
-//        return mDrawables.get(pos);
         drawable = TextDrawable.builder()
                 .beginConfig().width(64).height(64)
                 .endConfig()
@@ -104,4 +114,12 @@ public class AvatarIcons {
         return drawable;
     }
 
+    public int getBackgroundColor(int pos) {
+        if (pos < 16) {
+            return avatarIconBackgroundColors[pos];
+        }
+        else {
+            return materialColors[pos - 16];
+        }
+    }
 }

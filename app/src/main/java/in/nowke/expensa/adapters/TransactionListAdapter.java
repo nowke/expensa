@@ -2,6 +2,7 @@ package in.nowke.expensa.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,8 +71,17 @@ public class TransactionListAdapter extends RecyclerView.Adapter<TransactionList
 
                 itemNormalHolder.transTitle.setText(current.transDesc);
                 itemNormalHolder.transId.setText(String.valueOf(current.transId));
-                itemNormalHolder.transAmount.setText(String.valueOf(current.transAmount));
                 itemNormalHolder.transDate.setText(current.transDate);
+
+                if (current.transType == 0) {
+                    itemNormalHolder.transAmount.setTextColor(context.getResources().getColor(R.color.colorMaterialTeal));
+                    itemNormalHolder.transAmount.setText(Html.fromHtml(current.transAmount.toString() + " &uarr;"));
+                }
+                else {
+                    itemNormalHolder.transAmount.setTextColor(context.getResources().getColor(R.color.colorMaterialRed));
+                    itemNormalHolder.transAmount.setText(Html.fromHtml(String.valueOf(Math.abs(current.transAmount)) + " &darr;"));
+                }
+
                 break;
 
             case ITEM_TYPE_HEADER:
@@ -80,8 +90,16 @@ public class TransactionListAdapter extends RecyclerView.Adapter<TransactionList
 
                 String uDate = Utilities.getDate(Long.parseLong(userHeader.userCreated));
 
-                headerViewHolder.userBalance.setText(String.valueOf(userHeader.userBalance));
-                headerViewHolder.userCreated.setText(uDate);
+                if (userHeader.userBalance >= 0) {
+                    headerViewHolder.userBalance.setTextColor(context.getResources().getColor(R.color.colorMaterialTeal));
+                    headerViewHolder.userBalance.setText(Html.fromHtml(String.valueOf(userHeader.userBalance + " &uarr;")));
+                }
+                else {
+                    headerViewHolder.userBalance.setTextColor(context.getResources().getColor(R.color.colorMaterialRed));
+                    headerViewHolder.userBalance.setText(Html.fromHtml(String.valueOf(Math.abs(userHeader.userBalance)) + " &darr;"));
+                }
+
+                headerViewHolder.userCreated.setText("Created: " + uDate);
                 break;
         }
     }

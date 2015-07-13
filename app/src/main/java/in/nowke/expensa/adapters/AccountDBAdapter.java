@@ -231,6 +231,20 @@ public class AccountDBAdapter {
         return uName;
     }
 
+    public int getIconById(int userId) {
+        SQLiteDatabase db = helper.getReadableDatabase();
+
+        String columns[] = {AccountDBHelper.USER_ID, AccountDBHelper.USER_ICON_ID};
+        Cursor cursor = db.query(AccountDBHelper.TABLE_ACCOUNT, columns, AccountDBHelper.USER_ID + "=" + userId, null, null, null, null);
+
+        int iconId = -1;
+        while (cursor.moveToNext()) {
+            int index = cursor.getColumnIndex(AccountDBHelper.USER_ICON_ID);
+            iconId = cursor.getInt(index);
+        }
+        return iconId;
+    }
+
     public String getCreatedDateById(int userId) {
         SQLiteDatabase db = helper.getReadableDatabase();
 

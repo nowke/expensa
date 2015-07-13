@@ -3,6 +3,7 @@ package in.nowke.expensa;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -18,6 +19,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ImageView;
+
+import com.telly.mrvector.MrVector;
 
 import in.nowke.expensa.activities.AddAccountActivity;
 import in.nowke.expensa.fragments.HomeFragment;
@@ -120,6 +124,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getApplicationContext(), AddAccountActivity.class));
+                overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
+
             }
         });
 
@@ -200,6 +206,9 @@ public class MainActivity extends AppCompatActivity {
                         return true;
                     }
                 });
+        ImageView avatarCircle = (ImageView) navigationView.findViewById(R.id.accountAvatar);
+        Drawable drawable = MrVector.inflate(getResources(), R.drawable.account_circle);
+        avatarCircle.setImageDrawable(drawable);
     }
 
     /**

@@ -3,6 +3,7 @@ package in.nowke.expensa.adapters;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,7 +66,6 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
         String uDate = Utilities.getDate(Long.parseLong(current.user_created));
 
         holder.userName.setText(current.user_name);
-        holder.userBalance.setText(current.user_balance.toString());
         holder.userId.setText(String.valueOf(current.user_id));
         holder.userAccountType.setText(String.valueOf(current.user_account_type));
         holder.userDate.setText(uDate);
@@ -75,8 +75,16 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
             holder.userIcon.setImageDrawable(drawable);
         } else {
             textDrawable = avatarIcons.getDrawable(current.user_icon_id - 16, String.valueOf(current.user_name.charAt(0)));
-
             holder.userIcon.setImageDrawable(textDrawable);
+        }
+
+        if (current.user_balance >= 0) {
+            holder.userBalance.setTextColor(context.getResources().getColor(R.color.colorMaterialTeal));
+            holder.userBalance.setText(Html.fromHtml(current.user_balance.toString() + " &uarr;"));
+        }
+        else {
+            holder.userBalance.setTextColor(context.getResources().getColor(R.color.colorMaterialRed));
+            holder.userBalance.setText(Html.fromHtml(String.valueOf(Math.abs(current.user_balance)) + " &darr;"));
         }
 
     }

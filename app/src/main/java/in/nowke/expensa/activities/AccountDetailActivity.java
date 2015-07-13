@@ -1,6 +1,8 @@
 package in.nowke.expensa.activities;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -9,15 +11,22 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageView;
+
+import com.telly.mrvector.MrVector;
 
 import java.util.List;
 
 import in.nowke.expensa.R;
 import in.nowke.expensa.adapters.AccountDBAdapter;
 import in.nowke.expensa.adapters.TransactionListAdapter;
+import in.nowke.expensa.classes.AvatarIcons;
 import in.nowke.expensa.entity.TransactionDetail;
 
 public class AccountDetailActivity extends AppCompatActivity {;
@@ -74,12 +83,40 @@ public class AccountDetailActivity extends AppCompatActivity {;
 
         CollapsingToolbarLayout collapsingToolbar =
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        collapsingToolbar.setTitle("Account Detail");
+        AccountDBAdapter helper = new AccountDBAdapter(this);
+        String userName = helper.getNameById(Integer.parseInt(userID));
+        int iconId = helper.getIconById(Integer.parseInt(userID));
 
-//        collapsingToolbar.setBackgroundColor(getResources().getColor(R.color.material_blue_grey_800));
+        collapsingToolbar.setTitle(userName);
         fixApi21ToolBarBug(toolbar);
 
+        ImageView imageView = (ImageView) findViewById(R.id.detailImage);
+
+        // Avatar
+        AvatarIcons avatarIcons = new AvatarIcons(this);
+        int backgroundColor = avatarIcons.getBackgroundColor(iconId);
+        if (iconId < 16) {
+            Drawable drawable = MrVector.inflate(getResources(), avatarIcons.getAvatarIcon(iconId));
+            imageView.setImageDrawable(drawable);
+
+        }
+        else {
+            imageView.setBackgroundColor(getResources().getColor(backgroundColor));
+        }
+
+        collapsingToolbar.setBackgroundColor(getResources().getColor(backgroundColor));
+        collapsingToolbar.setContentScrimColor(getResources().getColor(backgroundColor));
+
+//        setStatusBarColor();
     }
+
+//    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+//    private void setStatusBarColor() {
+//        Window window = this.getWindow();
+//        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//        window.setStatusBarColor(this.getResources().getColor(R.color.avatar_1_color));
+//    }
 
     private void fixApi21ToolBarBug(Toolbar toolbar){
         if (Build.VERSION.SDK_INT!=21) return; //only on api 21
