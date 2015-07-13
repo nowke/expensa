@@ -13,6 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,10 +21,12 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.telly.mrvector.MrVector;
 
 import in.nowke.expensa.activities.AddAccountActivity;
+import in.nowke.expensa.adapters.AccountDBAdapter;
 import in.nowke.expensa.fragments.HomeFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -209,6 +212,17 @@ public class MainActivity extends AppCompatActivity {
         ImageView avatarCircle = (ImageView) navigationView.findViewById(R.id.accountAvatar);
         Drawable drawable = MrVector.inflate(getResources(), R.drawable.account_circle);
         avatarCircle.setImageDrawable(drawable);
+
+        TextView accountBalance = (TextView) navigationView.findViewById(R.id.accountBalance);
+        AccountDBAdapter helper = new AccountDBAdapter(this);
+        Double totalBalance = helper.calcTotalBalance();
+        if (totalBalance >= 0) {
+            accountBalance.setText(Html.fromHtml(totalBalance.toString() + " &uarr;"));
+        }
+        else {
+            accountBalance.setText(Html.fromHtml(String.valueOf(Math.abs(totalBalance)) + " &darr;"));
+        }
+
     }
 
     /**

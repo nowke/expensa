@@ -217,6 +217,21 @@ public class AccountDBAdapter {
         return balance;
     }
 
+    public Double calcTotalBalance() {
+        SQLiteDatabase db = helper.getReadableDatabase();
+
+        String columns[] = {AccountDBHelper.USER_BALANCE};
+        Cursor cursor = db.query(AccountDBHelper.TABLE_ACCOUNT, columns, null, null, null, null, null);
+
+        Double totalBalance = 0.0;
+        while (cursor.moveToNext()) {
+            int index = cursor.getColumnIndex(AccountDBHelper.USER_BALANCE);
+            Double userBalance = cursor.getDouble(index);
+            totalBalance += userBalance;
+        }
+        return totalBalance;
+    }
+
     public String getNameById(int userId) {
         SQLiteDatabase db = helper.getReadableDatabase();
 
