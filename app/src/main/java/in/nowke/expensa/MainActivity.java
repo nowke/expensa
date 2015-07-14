@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     HomeFragment homeFragment;
     private FloatingActionButton fabAddAccount;
+    TextView accountBalance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +52,19 @@ public class MainActivity extends AppCompatActivity {
             showMainWindow();
         }
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AccountDBAdapter helper = new AccountDBAdapter(this);
+        Double totalBalance = helper.calcTotalBalance();
+        if (totalBalance >= 0) {
+            accountBalance.setText(Html.fromHtml(totalBalance.toString() + " &uarr;"));
+        }
+        else {
+            accountBalance.setText(Html.fromHtml(String.valueOf(Math.abs(totalBalance)) + " &darr;"));
+        }
     }
 
     @Override
@@ -213,15 +227,7 @@ public class MainActivity extends AppCompatActivity {
         Drawable drawable = MrVector.inflate(getResources(), R.drawable.account_circle);
         avatarCircle.setImageDrawable(drawable);
 
-        TextView accountBalance = (TextView) navigationView.findViewById(R.id.accountBalance);
-        AccountDBAdapter helper = new AccountDBAdapter(this);
-        Double totalBalance = helper.calcTotalBalance();
-        if (totalBalance >= 0) {
-            accountBalance.setText(Html.fromHtml(totalBalance.toString() + " &uarr;"));
-        }
-        else {
-            accountBalance.setText(Html.fromHtml(String.valueOf(Math.abs(totalBalance)) + " &darr;"));
-        }
+        accountBalance = (TextView) navigationView.findViewById(R.id.accountBalance);
 
     }
 

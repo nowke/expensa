@@ -65,6 +65,28 @@ public class AvatarIcons {
             R.color.colorMaterialBlueGrey,
     };
 
+    private int[] materialColorsDark = {
+            R.color.colorMaterialRedDark,
+            R.color.colorMaterialPinkDark,
+            R.color.colorMaterialPurpleDark,
+            R.color.colorMaterialDeepPurpleDark,
+            R.color.colorMaterialIndigoDark,
+            R.color.colorMaterialBlueDark,
+            R.color.colorMaterialLightBlueDark,
+            R.color.colorMaterialCyanDark,
+            R.color.colorMaterialTealDark,
+            R.color.colorMaterialGreenDark,
+            R.color.colorMaterialLightGreenDark,
+            R.color.colorMaterialLimeDark,
+            R.color.colorMaterialYellowDark,
+            R.color.colorMaterialAmberDark,
+            R.color.colorMaterialOrangeDark,
+            R.color.colorMaterialDeepOrangeDark,
+            R.color.colorMaterialBrownDark,
+            R.color.colorMaterialGreyDark,
+            R.color.colorMaterialBlueGreyDark,
+    };
+
     private int[] avatarIconBackgroundColors = {
             R.color.avatar_1,
             R.color.avatar_2,
@@ -82,6 +104,25 @@ public class AvatarIcons {
             R.color.avatar_14,
             R.color.avatar_15,
             R.color.avatar_16,
+    };
+
+    private int[] avatarIconBackgroundColorsDark = {
+            R.color.avatar_1_dark,
+            R.color.avatar_2_dark,
+            R.color.avatar_3_dark,
+            R.color.avatar_4_dark,
+            R.color.avatar_5_dark,
+            R.color.avatar_6_dark,
+            R.color.avatar_7_dark,
+            R.color.avatar_8_dark,
+            R.color.avatar_9_dark,
+            R.color.avatar_10_dark,
+            R.color.avatar_11_dark,
+            R.color.avatar_12_dark,
+            R.color.avatar_13_dark,
+            R.color.avatar_14_dark,
+            R.color.avatar_15_dark,
+            R.color.avatar_16_dark,
     };
 
     public AvatarIcons(Context context) {
@@ -120,6 +161,25 @@ public class AvatarIcons {
         }
         else {
             return materialColors[pos - 16];
+        }
+    }
+
+    public int getBackgroundColorDark(int pos) {
+        if (pos < 16) {
+            return avatarIconBackgroundColorsDark[pos];
+        }
+        else {
+            return materialColorsDark[pos - 16];
+        }
+    }
+
+    public boolean isTextColorLight(int pos) {
+        switch (pos) {
+            case 0:case 1:case 2:case 3:case 4:case 5:case 6:case 7:
+            case 9:case 10:case 11:case 13:case 14:case 15:case 28:case 29:
+                return false;
+            default:
+                return true;
         }
     }
 }

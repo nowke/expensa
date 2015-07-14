@@ -2,6 +2,7 @@ package in.nowke.expensa.activities;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -98,17 +99,31 @@ public class AccountDetailActivity extends AppCompatActivity {;
 
         collapsingToolbar.setBackgroundColor(getResources().getColor(backgroundColor));
         collapsingToolbar.setContentScrimColor(getResources().getColor(backgroundColor));
+//        collapsingToolbar.setExpandedTitleTextAppearance(R.style.toolbar_text);
+        setStatusBarColor(avatarIcons.getBackgroundColorDark(iconId));
 
-//        setStatusBarColor();
+//        final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+//        upArrow.setColorFilter(getResources().getColor(R.color.mdtp_transparent_black), PorterDuff.Mode.SRC_ATOP);
+//        getSupportActionBar().setHomeAsUpIndicator(upArrow);
+
+        if (!avatarIcons.isTextColorLight(iconId)) {
+            collapsingToolbar.setExpandedTitleColor(getResources().getColor(R.color.colorPrimaryText));
+            collapsingToolbar.setCollapsedTitleTextColor(getResources().getColor(R.color.colorPrimaryText));
+
+            // This is temporary FIX ASAP using themes
+            final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+             upArrow.setColorFilter(getResources().getColor(R.color.colorPrimaryText), PorterDuff.Mode.SRC_ATOP);
+            getSupportActionBar().setHomeAsUpIndicator(upArrow);
+        }
     }
 
-//    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-//    private void setStatusBarColor() {
-//        Window window = this.getWindow();
-//        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-//        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-//        window.setStatusBarColor(this.getResources().getColor(R.color.avatar_1_color));
-//    }
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void setStatusBarColor(int statusBarColor) {
+        Window window = this.getWindow();
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.setStatusBarColor(this.getResources().getColor(statusBarColor));
+    }
 
     private void fixApi21ToolBarBug(Toolbar toolbar){
         if (Build.VERSION.SDK_INT!=21) return; //only on api 21
@@ -126,8 +141,6 @@ public class AccountDetailActivity extends AppCompatActivity {;
     }
 
     private void initViews() {
-
-
         adapter = new TransactionListAdapter(this, getData());
         mTransactionList = (RecyclerView) findViewById(R.id.transactionListRecycler);
         mTransactionList.setAdapter(adapter);

@@ -22,7 +22,7 @@
             android:fitsSystemWindows="true"
             app:contentScrim="?attr/colorPrimary"
             app:expandedTitleMarginEnd="72dp"
-            app:expandedTitleMarginStart="16dp"
+            app:expandedTitleMarginStart="72dp"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <ImageView
@@ -40,6 +40,8 @@
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
                 app:layout_scrollFlags="scroll|enterAlways"
+                app:contentInsetStart="72dp"
+                app:contentInsetLeft="72dp"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
@@ -66,9 +68,9 @@
         android:src="@drawable/ic_edit_white"
         app:borderWidth="0dp"
         app:elevation="@dimen/fab_elevation"
-        app:fabSize="normal"
+        app:fabSize="mini"
         app:layout_anchor="@id/appbar"
-        app:layout_anchorGravity="bottom|right|end" />
+        app:layout_anchorGravity="bottom|left|start" />
 
     <android.support.design.widget.FloatingActionButton
         app:borderWidth="0dp"

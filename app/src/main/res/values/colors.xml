@@ -36,6 +36,27 @@
     <color name="colorMaterialGrey">#9E9E9E</color>
     <color name="colorMaterialBlueGrey">#607D8B</color>
 
+    <!-- Material Colors 700 -->
+    <color name="colorMaterialRedDark">#D32F2F</color>
+    <color name="colorMaterialPinkDark">#C2185B</color>
+    <color name="colorMaterialPurpleDark">#7B1FA2</color>
+    <color name="colorMaterialDeepPurpleDark">#512DA8</color>
+    <color name="colorMaterialIndigoDark">#303F9F</color>
+    <color name="colorMaterialBlueDark">#1976D2</color>
+    <color name="colorMaterialLightBlueDark">#0288D1</color>
+    <color name="colorMaterialCyanDark">#0097A7</color>
+    <color name="colorMaterialTealDark">#00796B</color>
+    <color name="colorMaterialGreenDark">#388E3C</color>
+    <color name="colorMaterialLightGreenDark">#689F38</color>
+    <color name="colorMaterialLimeDark">#AFB42B</color>
+    <color name="colorMaterialYellowDark">#FBC02D</color>
+    <color name="colorMaterialAmberDark">#FFA000</color>
+    <color name="colorMaterialOrangeDark">#F57C00</color>
+    <color name="colorMaterialDeepOrangeDark">#E64A19</color>
+    <color name="colorMaterialBrownDark">#5D4037</color>
+    <color name="colorMaterialGreyDark">#616161</color>
+    <color name="colorMaterialBlueGreyDark">#455A64</color>
+
     <color name="mdtp_accent_color">#4A89DC</color>
     <color name="mdtp_accent_color_dark">#1976D2</color>
 
