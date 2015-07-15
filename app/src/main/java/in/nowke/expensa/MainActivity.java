@@ -57,14 +57,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        AccountDBAdapter helper = new AccountDBAdapter(this);
-        Double totalBalance = helper.calcTotalBalance();
-        if (totalBalance >= 0) {
-            accountBalance.setText(Html.fromHtml(totalBalance.toString() + " &uarr;"));
-        }
-        else {
-            accountBalance.setText(Html.fromHtml(String.valueOf(Math.abs(totalBalance)) + " &darr;"));
-        }
+        updateBalance();
     }
 
     @Override
@@ -88,10 +81,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (homeFragment.finishActionMode()) {
+        if (homeFragment != null && homeFragment.finishActionMode()) {
             return;
         }
-        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+        if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             mDrawerLayout.closeDrawers();
             return;
         }
@@ -100,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_MENU) {
+        if (keyCode == KeyEvent.KEYCODE_MENU && mDrawerLayout != null) {
             if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
                 mDrawerLayout.closeDrawers();
             }
@@ -192,6 +185,10 @@ public class MainActivity extends AppCompatActivity {
      * @param view
      */
     public void onSkip(View view) {
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean("RanBefore", true);
+        editor.apply();
         showMainWindow();
     }
 
@@ -228,6 +225,7 @@ public class MainActivity extends AppCompatActivity {
         avatarCircle.setImageDrawable(drawable);
 
         accountBalance = (TextView) navigationView.findViewById(R.id.accountBalance);
+        updateBalance();
 
     }
 
@@ -239,13 +237,25 @@ public class MainActivity extends AppCompatActivity {
     private boolean isFirstTime() {
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         boolean ranBefore = preferences.getBoolean("RanBefore", false);
-        if (!ranBefore) {
+//        if (!ranBefore) {
             // first time
-            SharedPreferences.Editor editor = preferences.edit();
-            editor.putBoolean("RanBefore", true);
-            editor.apply();
-        }
+//            SharedPreferences.Editor editor = preferences.edit();
+//            editor.putBoolean("RanBefore", true);
+//            editor.apply();
+//        }
         return !ranBefore;
+    }
+
+    private void updateBalance() {
+        if (accountBalance != null) {
+            AccountDBAdapter helper = new AccountDBAdapter(this);
+            Double totalBalance = helper.calcTotalBalance();
+            if (totalBalance >= 0) {
+                accountBalance.setText(Html.fromHtml(totalBalance.toString() + " &uarr;"));
+            } else {
+                accountBalance.setText(Html.fromHtml(String.valueOf(Math.abs(totalBalance)) + " &darr;"));
+            }
+        }
     }
 }
 

@@ -9,7 +9,7 @@ public class TransactionDetail {
     public String userCreated;
     public String userName;
 
-    public int transId;
+    public long transId;
     public int transType;
     public String transDesc;
     public Double transAmount;

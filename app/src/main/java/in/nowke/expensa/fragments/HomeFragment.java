@@ -78,6 +78,7 @@ public class HomeFragment extends Fragment {
                 TextView userIdText = (TextView) view.findViewById(R.id.userId);
                 Intent intent = new Intent(getActivity(), AccountDetailActivity.class);
                 intent.putExtra("USER_ID", userIdText.getText().toString());
+                intent.putExtra("LIST_POSITION", position);
 
                 startActivity(intent);
             }

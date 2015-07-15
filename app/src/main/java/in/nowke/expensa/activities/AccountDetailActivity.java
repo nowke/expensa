@@ -32,13 +32,14 @@ import in.nowke.expensa.entity.TransactionDetail;
 
 public class AccountDetailActivity extends AppCompatActivity {;
 
-    private TransactionListAdapter adapter;
+    public static TransactionListAdapter adapter;
 
     private RecyclerView mTransactionList;
 
     private FloatingActionButton fabAddTransaction;
 
     String userID;
+    int listPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +48,7 @@ public class AccountDetailActivity extends AppCompatActivity {;
 
         setContentView(R.layout.activity_account_detail);
         userID = getIntent().getStringExtra("USER_ID");
+        listPosition = getIntent().getIntExtra("LIST_POSITION", -1);
 
         initToolbar();
         initViews();
@@ -99,12 +101,11 @@ public class AccountDetailActivity extends AppCompatActivity {;
 
         collapsingToolbar.setBackgroundColor(getResources().getColor(backgroundColor));
         collapsingToolbar.setContentScrimColor(getResources().getColor(backgroundColor));
-//        collapsingToolbar.setExpandedTitleTextAppearance(R.style.toolbar_text);
-        setStatusBarColor(avatarIcons.getBackgroundColorDark(iconId));
 
-//        final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-//        upArrow.setColorFilter(getResources().getColor(R.color.mdtp_transparent_black), PorterDuff.Mode.SRC_ATOP);
-//        getSupportActionBar().setHomeAsUpIndicator(upArrow);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            setStatusBarColor(avatarIcons.getBackgroundColorDark(iconId));
+        }
+
 
         if (!avatarIcons.isTextColorLight(iconId)) {
             collapsingToolbar.setExpandedTitleColor(getResources().getColor(R.color.colorPrimaryText));
@@ -112,10 +113,11 @@ public class AccountDetailActivity extends AppCompatActivity {;
 
             // This is temporary FIX ASAP using themes
             final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-             upArrow.setColorFilter(getResources().getColor(R.color.colorPrimaryText), PorterDuff.Mode.SRC_ATOP);
+            upArrow.setColorFilter(getResources().getColor(R.color.colorPrimaryText), PorterDuff.Mode.SRC_ATOP);
             getSupportActionBar().setHomeAsUpIndicator(upArrow);
         }
     }
+
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void setStatusBarColor(int statusBarColor) {
@@ -126,7 +128,7 @@ public class AccountDetailActivity extends AppCompatActivity {;
     }
 
     private void fixApi21ToolBarBug(Toolbar toolbar){
-        if (Build.VERSION.SDK_INT!=21) return; //only on api 21
+        if (Build.VERSION.SDK_INT != Build.VERSION_CODES.LOLLIPOP) return; //only on api 21
         final int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
         final int result = (resourceId>0) ? getResources().getDimensionPixelSize(resourceId) : 0;
         final CollapsingToolbarLayout.LayoutParams params =
@@ -152,6 +154,7 @@ public class AccountDetailActivity extends AppCompatActivity {;
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), AddTransactionActivity.class);
                 intent.putExtra("TRANS_USER_ID", userID);
+                intent.putExtra("USER_LIST_POSITION", listPosition);
                 startActivity(intent);
             }
         });

@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 import in.nowke.expensa.R;
+import in.nowke.expensa.classes.Message;
 import in.nowke.expensa.classes.Utilities;
 import in.nowke.expensa.entity.TransactionDetail;
 
@@ -117,6 +118,12 @@ public class TransactionListAdapter extends RecyclerView.Adapter<TransactionList
     public void remove(int position) {
         data.remove(position);
         notifyItemRemoved(position);
+    }
+
+    public void updateBalance(Double amount) {
+        TransactionDetail headerData = data.get(0);
+        headerData.userBalance += amount;
+        notifyItemChanged(0);
     }
 
     class MainViewHolder extends RecyclerView.ViewHolder {

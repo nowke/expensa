@@ -44,23 +44,18 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
         this.data = data;
         this.emptyView = emptyView;
         avatarIcons = new AvatarIcons(context);
-        ;
     }
 
     @Override
     public AccountViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         View view = inflater.inflate(R.layout.account_row, parent, false);
         emptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
         AccountViewHolder holder = new AccountViewHolder(view);
         return holder;
-
     }
-
 
     @Override
     public void onBindViewHolder(AccountViewHolder holder, int position) {
-
 
         AccountDetail current = data.get(position);
         String uDate = Utilities.getDate(Long.parseLong(current.user_created));
@@ -106,6 +101,11 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
         emptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
 
+    public void updateAccount(int position, Double amount) {
+        AccountDetail currentAccount = data.get(position);
+        currentAccount.user_balance += amount;
+        notifyItemChanged(position);
+    }
 
     class AccountViewHolder extends RecyclerView.ViewHolder {
 

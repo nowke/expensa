@@ -17,8 +17,10 @@ import java.util.Calendar;
 
 import in.nowke.expensa.R;
 import in.nowke.expensa.adapters.AccountDBAdapter;
+import in.nowke.expensa.entity.AccountDetail;
 import in.nowke.expensa.entity.TransactionDetail;
 import in.nowke.expensa.entity.MyDateFormat;
+import in.nowke.expensa.fragments.HomeFragment;
 
 public class AddTransactionActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
 
@@ -33,6 +35,7 @@ public class AddTransactionActivity extends AppCompatActivity implements DatePic
     MyDateFormat date;
 
     String userId;
+    int listPosition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +44,7 @@ public class AddTransactionActivity extends AppCompatActivity implements DatePic
         setContentView(R.layout.activity_add_transaction);
 
         userId = getIntent().getStringExtra("TRANS_USER_ID");
+        listPosition = getIntent().getIntExtra("USER_LIST_POSITION", -1);
 
         dateTextView = (TextView) findViewById(R.id.dateTextView);
         transTitle = (EditText) findViewById(R.id.transTitle);
@@ -69,7 +73,7 @@ public class AddTransactionActivity extends AppCompatActivity implements DatePic
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_add_transaction) {
             String transTitleStr = transTitle.getText().toString();
-            Double transAmountVal = Double.valueOf(transAmount.getText().toString());
+            String transAmountVal = transAmount.getText().toString();
             int transTypeVal = 0;
             switch (transType.getCheckedRadioButtonId()) {
                 case R.id.radioTransCredit:
@@ -79,7 +83,9 @@ public class AddTransactionActivity extends AppCompatActivity implements DatePic
                     transTypeVal = 1;
                     break;
             }
-            addTransaction(transTitleStr, transAmountVal, transTypeVal, date.getDateStr());
+            if (date != null && !transTitleStr.isEmpty() && !transAmountVal.isEmpty() && !transAmountVal.equals(".")) {
+                addTransaction(transTitleStr, Double.valueOf(transAmountVal), transTypeVal, date.getDateStr());
+            }
             return true;
         }
 
@@ -99,6 +105,7 @@ public class AddTransactionActivity extends AppCompatActivity implements DatePic
     }
 
     private void addTransaction(String transTitleStr, Double transAmountVal, int transTypeVal, String dateStr) {
+
         AccountDBAdapter helper;
         helper = new AccountDBAdapter(this);
 
@@ -110,7 +117,18 @@ public class AddTransactionActivity extends AppCompatActivity implements DatePic
         transactionDetail.userId = Integer.parseInt(userId);
 
         long id = helper.addTransaction(transactionDetail);
+        transactionDetail.transId = id;
+        AccountDetailActivity.adapter.add(transactionDetail, AccountDetailActivity.adapter.getItemCount());
+        if (transTypeVal == 0) {
+            AccountDetailActivity.adapter.updateBalance(transAmountVal);
+            HomeFragment.adapter.updateAccount(listPosition, transAmountVal);
+        }
+        else {
+            AccountDetailActivity.adapter.updateBalance(-transAmountVal);
+            HomeFragment.adapter.updateAccount(listPosition, -transAmountVal);
+        }
         finish();
+        overridePendingTransition(R.anim.top_in, R.anim.bottom_out);
     }
 
     public void pickDate(View view) {
@@ -126,7 +144,6 @@ public class AddTransactionActivity extends AppCompatActivity implements DatePic
 
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-//        String date = "You picked the following date: "+dayOfMonth+"/"+(monthOfYear+1)+"/"+year;
         date = new MyDateFormat(dayOfMonth, monthOfYear + 1, year);
         dateTextView.setText(date.getDateStr());
     }
