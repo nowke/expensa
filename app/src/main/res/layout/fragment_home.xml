@@ -1,45 +1,45 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="match_parent"
-    android:layout_width="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     tools:context=".fragments.HomeFragment">
 
     <android.support.v7.widget.RecyclerView
-        android:layout_marginTop="?attr/actionBarSize"
         android:id="@+id/accountListRecycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="?attr/actionBarSize"
         android:clickable="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:longClickable="true" />
 
     <LinearLayout
-        android:padding="16dp"
         android:id="@+id/empty_row_view"
-        android:orientation="vertical"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_height="wrap_content">
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <ImageView
             android:id="@+id/empty_row_image"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_account_box_white_big"
             android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_gravity="center"
             android:cropToPadding="true"
-            android:layout_height="160dp" />
+            android:src="@drawable/ic_account_box_white_big" />
 
         <TextView
             android:id="@+id/empty_row_text"
-            android:textSize="24sp"
-            android:text="Accounts you add appear here"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
+            android:text="Accounts you add appear here"
             android:textColor="#9E9E9E"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:textSize="24sp" />
 
     </LinearLayout>
 

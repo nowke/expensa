@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <de.hdodenhof.circleimageview.CircleImageView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/avatar"
     android:layout_width="64dp"
     android:layout_height="64dp"
     android:layout_margin="4dp"
-    app:border_color="@color/colorAccent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android" />
+    app:border_color="@color/colorAccent" />

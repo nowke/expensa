@@ -23,8 +23,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingTop="16dp"
-        android:textColor="#FFFFFF"
         android:text="@string/welcome_expensa"
+        android:textColor="#FFFFFF"
         android:textSize="32sp" />
 
     <LinearLayout
@@ -35,13 +35,13 @@
 
         <Button
             android:id="@+id/button"
-            android:layout_weight="1"
-            android:layout_margin="8dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
             android:background="#FF0000"
-            android:textColor="#FFFFFF"
-            android:text="@string/button_google_plus" />
+            android:text="@string/button_google_plus"
+            android:textColor="#FFFFFF" />
 
         <Button
             android:layout_width="0dp"

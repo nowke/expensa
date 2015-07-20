@@ -26,10 +26,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/appbar"
-        android:orientation="vertical"
         android:nestedScrollingEnabled="true"
-        tools:ignore="UnusedAttribute"
-        android:padding="16dp">
+        android:orientation="vertical"
+        android:padding="16dp"
+        tools:ignore="UnusedAttribute">
 
         <android.support.design.widget.TextInputLayout
             android:id="@+id/textinputAddAccountName"
@@ -47,24 +47,24 @@
         </android.support.design.widget.TextInputLayout>
 
         <TextView
-            android:layout_marginBottom="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
             android:text="@string/choose_avatar" />
 
         <GridView
             android:id="@+id/choose_avatar_image"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:columnWidth="72dp"
-            android:numColumns="auto_fit"
-            android:verticalSpacing="8dp"
             android:clickable="true"
-            android:scrollbarSize="0dp"
+            android:columnWidth="72dp"
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:listSelector="#00000000"
-            android:stretchMode="columnWidth">
+            android:numColumns="auto_fit"
+            android:scrollbarSize="0dp"
+            android:stretchMode="columnWidth"
+            android:verticalSpacing="8dp">
 
         </GridView>
 
