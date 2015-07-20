@@ -2,6 +2,7 @@ package in.nowke.expensa.activities;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -44,7 +45,6 @@ public class AccountDetailActivity extends AppCompatActivity {;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
 
         setContentView(R.layout.activity_account_detail);
         userID = getIntent().getStringExtra("USER_ID");
@@ -59,7 +59,6 @@ public class AccountDetailActivity extends AppCompatActivity {;
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
-                overridePendingTransition(R.anim.pull_left_in, R.anim.push_out_right);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -68,7 +67,6 @@ public class AccountDetailActivity extends AppCompatActivity {;
     @Override
     public void onBackPressed() {
         finish();
-        overridePendingTransition(R.anim.pull_left_in, R.anim.push_out_right);
     }
 
     private void initToolbar() {
@@ -83,7 +81,6 @@ public class AccountDetailActivity extends AppCompatActivity {;
         int iconId = helper.getIconById(Integer.parseInt(userID));
 
         collapsingToolbar.setTitle(userName);
-        fixApi21ToolBarBug(toolbar);
 
         ImageView imageView = (ImageView) findViewById(R.id.detailImage);
 
@@ -106,7 +103,6 @@ public class AccountDetailActivity extends AppCompatActivity {;
             setStatusBarColor(avatarIcons.getBackgroundColorDark(iconId));
         }
 
-
         if (!avatarIcons.isTextColorLight(iconId)) {
             collapsingToolbar.setExpandedTitleColor(getResources().getColor(R.color.colorPrimaryText));
             collapsingToolbar.setCollapsedTitleTextColor(getResources().getColor(R.color.colorPrimaryText));
@@ -125,16 +121,6 @@ public class AccountDetailActivity extends AppCompatActivity {;
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.setStatusBarColor(this.getResources().getColor(statusBarColor));
-    }
-
-    private void fixApi21ToolBarBug(Toolbar toolbar){
-        if (Build.VERSION.SDK_INT != Build.VERSION_CODES.LOLLIPOP) return; //only on api 21
-        final int resourceId = getResources().getIdentifier("status_bar_height", "dimen", "android");
-        final int result = (resourceId>0) ? getResources().getDimensionPixelSize(resourceId) : 0;
-        final CollapsingToolbarLayout.LayoutParams params =
-                (CollapsingToolbarLayout.LayoutParams)toolbar.getLayoutParams();
-        params.topMargin -= result;
-        toolbar.setLayoutParams(params);
     }
 
     public List<TransactionDetail> getData() {
