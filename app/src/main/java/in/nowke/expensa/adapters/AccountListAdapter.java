@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import in.nowke.expensa.MainActivity;
 import in.nowke.expensa.R;
 import in.nowke.expensa.entity.AccountDetail;
 import in.nowke.expensa.classes.AvatarIcons;
@@ -34,7 +35,6 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
     private Drawable drawable;
     private TextDrawable textDrawable;
     private View emptyView;
-
 
     List<AccountDetail> data = Collections.emptyList();
 

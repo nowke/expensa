@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import in.nowke.expensa.MainActivity;
 import in.nowke.expensa.R;
 import in.nowke.expensa.activities.AccountDetailActivity;
 import in.nowke.expensa.adapters.AccountDBAdapter;
@@ -97,7 +98,6 @@ public class HomeFragment extends Fragment {
             }
         }));
 
-
         return rootView;
     }
 
@@ -115,15 +115,15 @@ public class HomeFragment extends Fragment {
 
         switch (accountType) {
             case 1:
-                emptyViewText.setText("Accounts you add appear here");
+                emptyViewText.setText(getResources().getString(R.string.empty_text_home));
                 emptyViewImage.setImageResource(R.drawable.ic_account_box_white_big);
                 break;
             case 2:
-                emptyViewText.setText("Your archived accounts appear here");
+                emptyViewText.setText(getResources().getString(R.string.empty_text_archive));
                 emptyViewImage.setImageResource(R.drawable.ic_archive_white_big);
                 break;
             case 3:
-                emptyViewText.setText("No accounts in Trash!");
+                emptyViewText.setText(getResources().getString(R.string.empty_text_trash));
                 emptyViewImage.setImageResource(R.drawable.ic_delete_white_big);
                 break;
         }
@@ -173,8 +173,6 @@ public class HomeFragment extends Fragment {
 
             return true;
         }
-
-
 
         @Override
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {

@@ -35,4 +35,8 @@
     <string name="title_activity_account_detail">Account Detail</string>
     <string name="title_activity_add_transaction">Add Transaction</string>
     <string name="action_add_transaction">Add Transaction</string>
+
+    <string name="empty_text_home">Accounts you add appear here</string>
+    <string name="empty_text_archive">Your archived accounts appear here</string>
+    <string name="empty_text_trash">No accounts in Trash!</string>
 </resources>

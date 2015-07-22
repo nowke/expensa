@@ -34,7 +34,8 @@ public class MainActivity extends AppCompatActivity {
     Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
     HomeFragment homeFragment;
-    private FloatingActionButton fabAddAccount;
+    private static FloatingActionButton fabAddAccount;
+    private static NavigationView navigationView;
     TextView accountBalance;
 
     @Override
@@ -123,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
 
         // NAV DRAWER
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         if (navigationView != null) {
             setupDrawerContent(navigationView);
         }
@@ -153,7 +154,16 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+    }
 
+    public static void fabHideShow(int visibility) {
+        // 1 - Show, 0 - Hide
+        if (visibility == 0) {
+            fabAddAccount.hide();
+        }
+        else {
+            fabAddAccount.show();
+        }
     }
 
     /**
@@ -206,15 +216,15 @@ public class MainActivity extends AppCompatActivity {
                         switch (menuItem.getItemId()) {
                             case R.id.nav_home:
                                 homeFragment.setAccountListAdapter(1);
-                                fabAddAccount.setVisibility(View.VISIBLE);
+                                fabHideShow(1);
                                 break;
                             case R.id.nav_archives:
                                 homeFragment.setAccountListAdapter(2);
-                                fabAddAccount.setVisibility(View.INVISIBLE);
+                                fabHideShow(0);
                                 break;
                             case R.id.nav_trash:
                                 homeFragment.setAccountListAdapter(3);
-                                fabAddAccount.setVisibility(View.INVISIBLE);
+                                fabHideShow(0);
                                 break;
                         }
                         return true;
@@ -237,12 +247,6 @@ public class MainActivity extends AppCompatActivity {
     private boolean isFirstTime() {
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         boolean ranBefore = preferences.getBoolean("RanBefore", false);
-//        if (!ranBefore) {
-            // first time
-//            SharedPreferences.Editor editor = preferences.edit();
-//            editor.putBoolean("RanBefore", true);
-//            editor.apply();
-//        }
         return !ranBefore;
     }
 
