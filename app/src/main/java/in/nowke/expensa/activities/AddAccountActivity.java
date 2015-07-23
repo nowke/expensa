@@ -1,5 +1,6 @@
 package in.nowke.expensa.activities;
 
+import android.os.SystemClock;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import in.nowke.expensa.MainActivity;
 import in.nowke.expensa.R;
 import in.nowke.expensa.adapters.AccountDBAdapter;
 import in.nowke.expensa.adapters.AvatarAdapter;
@@ -111,7 +113,7 @@ public class AddAccountActivity extends AppCompatActivity {
             helper = new AccountDBAdapter(this);
             String timeStamp = String.valueOf(Utilities.getCurrentTimeStamp());
 
-            AccountDetail accountDetail = new AccountDetail();
+            final AccountDetail accountDetail = new AccountDetail();
             accountDetail.user_icon_id = iconPosition;
             accountDetail.user_name = accountName;
             accountDetail.user_balance = 0.0;
@@ -124,8 +126,21 @@ public class AddAccountActivity extends AppCompatActivity {
             finish();
 
             overridePendingTransition(R.anim.top_in, R.anim.bottom_out);
-            HomeFragment.adapter.add(accountDetail);
-            HomeFragment.scrollListToTop();
+
+            new Thread() {
+                @Override
+                public void run() {
+                    SystemClock.sleep(200);
+                    AddAccountActivity.this.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            HomeFragment.adapter.add(accountDetail);
+                            HomeFragment.scrollListToTop();
+                        }
+                    });
+                }
+            }.start();
+            
         }
     }
 
