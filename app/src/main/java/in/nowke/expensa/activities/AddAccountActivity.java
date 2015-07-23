@@ -121,9 +121,11 @@ public class AddAccountActivity extends AppCompatActivity {
             long id = helper.addAccount(accountDetail);
             accountDetail.user_id = id;
 
-            HomeFragment.adapter.add(accountDetail, HomeFragment.adapter.getItemCount());
             finish();
+
             overridePendingTransition(R.anim.top_in, R.anim.bottom_out);
+            HomeFragment.adapter.add(accountDetail);
+            HomeFragment.scrollListToTop();
         }
     }
 

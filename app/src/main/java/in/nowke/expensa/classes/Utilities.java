@@ -30,10 +30,19 @@ public class Utilities {
         return Integer.parseInt(getDateFromFormat(time, "yyyy"));
     }
 
+    private static boolean isDateToday(long time) {
+        String date = getDateFromFormat(time, "dd MMM");
+        String currentDate = getDateFromFormat(getCurrentTimeStamp(), "dd MMM");
+        return date.equals(currentDate);
+    }
+
     public static String getDate(long time) {
         int year = getYear(time);
         if (year < getCurrentYear()) {
             return getDateFromFormat(time, "MMM, yyyy");
+        }
+        else if (isDateToday(time)) {
+            return getDateFromFormat(time, "h:mm A");
         }
         else {
             return getDateFromFormat(time, "MMM dd");

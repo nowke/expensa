@@ -34,13 +34,17 @@ import in.nowke.expensa.classes.ActionCallback;
 import in.nowke.expensa.classes.ClickListener;
 import in.nowke.expensa.classes.DividerItemDecoration;
 import in.nowke.expensa.classes.RecyclerTouchListener;
+import jp.wasabeef.recyclerview.animators.LandingAnimator;
+import jp.wasabeef.recyclerview.animators.SlideInRightAnimator;
+import jp.wasabeef.recyclerview.animators.adapters.AlphaInAnimationAdapter;
+import jp.wasabeef.recyclerview.animators.adapters.SlideInBottomAnimationAdapter;
 
 /**
  * Created by nav on 26/6/15.
  */
 public class HomeFragment extends Fragment {
 
-    public RecyclerView mAccountList;
+    public static RecyclerView mAccountList;
     public static AccountListAdapter adapter;
 
     private LinearLayout emptyView;
@@ -67,8 +71,8 @@ public class HomeFragment extends Fragment {
         mAccountList = (RecyclerView) rootView.findViewById(R.id.accountListRecycler);
         adapter = new AccountListAdapter(getActivity(), getData(1), emptyView);
         mAccountList.setAdapter(adapter);
-        mAccountList.addItemDecoration(new DividerItemDecoration(getActivity(), null));
         mAccountList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mAccountList.setItemAnimator(new SlideInRightAnimator());
         mAccountList.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), mAccountList, new ClickListener() {
             @Override
             public void onClick(View view, int position) {
@@ -133,8 +137,12 @@ public class HomeFragment extends Fragment {
 
     public void setAccountListAdapter(int accountType) {
         adapter = new AccountListAdapter(getActivity(), getData(accountType), emptyView);
-        mAccountList.setAdapter(adapter);
+        mAccountList.swapAdapter(adapter, false);
         emptyView.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+    }
+
+    public static void scrollListToTop() {
+        mAccountList.scrollToPosition(0);
     }
 
     private ActionCallback mActionModeCallback = new ActionCallback() {

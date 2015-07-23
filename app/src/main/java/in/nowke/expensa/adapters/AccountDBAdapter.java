@@ -119,7 +119,8 @@ public class AccountDBAdapter {
                 AccountDBHelper.USER_ACCOUNT_TYPE,
                 AccountDBHelper.USER_CREATED
         };
-        Cursor cursor = db.query(AccountDBHelper.TABLE_ACCOUNT, columns, AccountDBHelper.USER_ACCOUNT_TYPE + "=" + accountType, null, null, null, null);
+        Cursor cursor = db.query(AccountDBHelper.TABLE_ACCOUNT, columns, AccountDBHelper.USER_ACCOUNT_TYPE + "=" + accountType, null, null, null,
+                AccountDBHelper.USER_CREATED + " DESC");
 
         List<AccountDetail> accInfo = new ArrayList<>();
 

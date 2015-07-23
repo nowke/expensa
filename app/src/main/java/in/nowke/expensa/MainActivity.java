@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -27,6 +28,7 @@ import com.telly.mrvector.MrVector;
 
 import in.nowke.expensa.activities.AddAccountActivity;
 import in.nowke.expensa.adapters.AccountDBAdapter;
+import in.nowke.expensa.classes.Message;
 import in.nowke.expensa.fragments.HomeFragment;
 
 public class MainActivity extends AppCompatActivity {
@@ -46,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
             setContentView(R.layout.activity_intro);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                setStatusBarColor();
+                this.setStatusBarColor(R.color.colorPrimary, true);
             }
         }
         else {
@@ -124,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
 
         // NAV DRAWER
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         if (navigationView != null) {
             setupDrawerContent(navigationView);
@@ -153,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
             actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(getResources().getString(R.string.title_activity_main_account));
         }
     }
 
@@ -181,11 +185,14 @@ public class MainActivity extends AppCompatActivity {
      * Sets Status Bar Color same as Primary Color (Only Lollipop & above)
      */
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private void setStatusBarColor() {
+    private void setStatusBarColor(int statusBarColor, boolean clearFlags) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) { return; }
         Window window = this.getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.setStatusBarColor(this.getResources().getColor(R.color.colorPrimary));
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        if (mDrawerLayout != null) {
+            mDrawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        }
     }
 
 
@@ -206,27 +213,51 @@ public class MainActivity extends AppCompatActivity {
      * Inflates Navigation Drawer
      * @param navigationView
      */
-    private void setupDrawerContent(NavigationView navigationView) {
+    private void setupDrawerContent(final NavigationView navigationView) {
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
-                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                    public boolean onNavigationItemSelected(final MenuItem menuItem) {
                         menuItem.setChecked(true);
                         mDrawerLayout.closeDrawers();
-                        switch (menuItem.getItemId()) {
-                            case R.id.nav_home:
-                                homeFragment.setAccountListAdapter(1);
-                                fabHideShow(1);
-                                break;
-                            case R.id.nav_archives:
-                                homeFragment.setAccountListAdapter(2);
-                                fabHideShow(0);
-                                break;
-                            case R.id.nav_trash:
-                                homeFragment.setAccountListAdapter(3);
-                                fabHideShow(0);
-                                break;
-                        }
+                        new Thread() {
+                            @Override
+                            public void run() {
+                                SystemClock.sleep(300);
+                                MainActivity.this.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        switch (menuItem.getItemId()) {
+                                            case R.id.nav_home:
+                                                homeFragment.setAccountListAdapter(1);
+                                                fabHideShow(1);
+                                                getSupportActionBar().setTitle(getResources().getString(R.string.title_activity_main_account));
+//                                                mToolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+//                                                MainActivity.this.setStatusBarColor(R.color.colorPrimaryDark, false);
+
+                                                break;
+                                            case R.id.nav_archives:
+                                                homeFragment.setAccountListAdapter(2);
+                                                fabHideShow(0);
+                                                getSupportActionBar().setTitle(getResources().getString(R.string.title_activity_main_archive));
+//                                                mToolbar.setBackgroundColor(getResources().getColor(R.color.colorArchive));
+//                                                MainActivity.this.setStatusBarColor(R.color.colorArchiveDark, false);
+
+                                                break;
+                                            case R.id.nav_trash:
+                                                homeFragment.setAccountListAdapter(3);
+                                                fabHideShow(0);
+                                                getSupportActionBar().setTitle(getResources().getString(R.string.title_activity_main_deleted));
+//                                                mToolbar.setBackgroundColor(getResources().getColor(R.color.colorDeleted));
+//                                                MainActivity.this.setStatusBarColor(R.color.colorDeletedDark, false);
+
+                                                break;
+                                        }
+
+                                    }
+                                });
+                            }
+                        }.start();
                         return true;
                     }
                 });

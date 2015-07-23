@@ -89,9 +89,9 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
         return data == null ? 0 : data.size();
     }
 
-    public void add(AccountDetail item, int position) {
-        data.add(position, item);
-        notifyItemInserted(position);
+    public void add(AccountDetail item) {
+        data.add(0, item);
+        notifyItemInserted(0);
         emptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
 
