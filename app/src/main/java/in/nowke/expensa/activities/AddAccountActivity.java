@@ -1,5 +1,6 @@
 package in.nowke.expensa.activities;
 
+import android.content.Intent;
 import android.os.SystemClock;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
@@ -17,6 +18,7 @@ import in.nowke.expensa.MainActivity;
 import in.nowke.expensa.R;
 import in.nowke.expensa.adapters.AccountDBAdapter;
 import in.nowke.expensa.adapters.AvatarAdapter;
+import in.nowke.expensa.classes.Message;
 import in.nowke.expensa.entity.AccountDetail;
 import in.nowke.expensa.classes.Utilities;
 import in.nowke.expensa.fragments.HomeFragment;
@@ -30,6 +32,11 @@ public class AddAccountActivity extends AppCompatActivity {
     public static int clickedPos;
 
     private static String LOG_TAG = "AddAccount";
+    private int editUserId;
+    private int editUserListPos;
+    private int editUserIconId;
+    private String editUserName;
+    private boolean editFromDetail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,10 +44,26 @@ public class AddAccountActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.bottom_in, R.anim.top_out);
         setContentView(R.layout.activity_add_account);
 
+        editUserId = -1;
+        editUserListPos = -1;
+        editFromDetail = false;
+        if (getIntent().hasExtra("User_id")) {
+            editUserId = getIntent().getIntExtra("User_id", -1);
+            editUserListPos = getIntent().getIntExtra("LIST_POSITION", -1);
+            editUserName = getIntent().getStringExtra("User_name");
+            editUserIconId = getIntent().getIntExtra("User_icon_id", -1);
+        }
+        if (getIntent().hasExtra("is_from_detail_activity")) {
+            editFromDetail = true;
+        }
+
         clickedPos = -1;
         // ACTION BAR
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setupAppBar(mToolbar);
+        if (editUserId != -1) {
+            getSupportActionBar().setTitle(getResources().getString(R.string.title_activity_edit_account));
+        }
 
         // TEXT INPUT LAYOUT
         mAddAccountName = (TextInputLayout) findViewById(R.id.textinputAddAccountName);
@@ -56,6 +79,7 @@ public class AddAccountActivity extends AppCompatActivity {
                 }
             }
         });
+
 
         // AVATAR CHOOSER GRID
         mAvatarChooser = (GridView) findViewById(R.id.choose_avatar_image);
@@ -75,12 +99,17 @@ public class AddAccountActivity extends AppCompatActivity {
                 clickedPos = position;
             }
         });
+
+        if (editUserId != -1) {
+            mAddAccountName.getEditText().setText(editUserName);
+            mAvatarChooser.performItemClick(mAvatarChooser.getAdapter().getView(editUserIconId, null, null), editUserIconId, mAvatarChooser.getAdapter().getItemId(editUserIconId));
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_add_account, menu);
+        getMenuInflater().inflate((editUserId == -1) ? R.menu.menu_add_account : R.menu.menu_edit_account, menu);
         return true;
     }
 
@@ -103,7 +132,44 @@ public class AddAccountActivity extends AppCompatActivity {
             return true;
         }
 
+        if (id == R.id.action_update) {
+            String newAccountName = mAddAccountName.getEditText().getText().toString();
+            updateAccount(newAccountName, clickedPos, editUserListPos);
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
+    }
+
+    private void updateAccount(final String newAccountName, final int clickedPos, final int listPos) {
+        if (newAccountName.equals(editUserName) && clickedPos == editUserIconId || newAccountName.isEmpty()) { return; }
+        AccountDBAdapter helper = new AccountDBAdapter(this);
+        helper.editUser(editUserId, newAccountName, clickedPos);
+
+        if (editFromDetail) {
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("new_user_name", newAccountName);
+            returnIntent.putExtra("new_icon_id", clickedPos);
+            setResult(RESULT_OK, returnIntent);
+        }
+
+        finish();
+
+        overridePendingTransition(R.anim.top_in, R.anim.bottom_out);
+
+        new Thread() {
+            @Override
+            public void run() {
+                SystemClock.sleep(200);
+                AddAccountActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        HomeFragment.adapter.updateAccountNameAndIcon(listPos, newAccountName, clickedPos);
+                        HomeFragment.finishActionMode();
+                    }
+                });
+            }
+        }.start();
     }
 
     private void addAccount(String accountName, int iconPosition) {
@@ -162,6 +228,5 @@ public class AddAccountActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-
     }
 }

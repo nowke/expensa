@@ -42,7 +42,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/account_title"
-                android:inputType="textPersonName" />
+                android:inputType="textCapWords"
+                android:selectAllOnFocus="true" />
 
         </android.support.design.widget.TextInputLayout>
 

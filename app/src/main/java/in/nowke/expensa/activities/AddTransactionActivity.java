@@ -17,7 +17,6 @@ import java.util.Calendar;
 
 import in.nowke.expensa.R;
 import in.nowke.expensa.adapters.AccountDBAdapter;
-import in.nowke.expensa.entity.AccountDetail;
 import in.nowke.expensa.entity.TransactionDetail;
 import in.nowke.expensa.entity.MyDateFormat;
 import in.nowke.expensa.fragments.HomeFragment;
@@ -121,11 +120,11 @@ public class AddTransactionActivity extends AppCompatActivity implements DatePic
         AccountDetailActivity.adapter.add(transactionDetail, AccountDetailActivity.adapter.getItemCount());
         if (transTypeVal == 0) {
             AccountDetailActivity.adapter.updateBalance(transAmountVal);
-            HomeFragment.adapter.updateAccount(listPosition, transAmountVal);
+            HomeFragment.adapter.updateAccountAmount(listPosition, transAmountVal);
         }
         else {
             AccountDetailActivity.adapter.updateBalance(-transAmountVal);
-            HomeFragment.adapter.updateAccount(listPosition, -transAmountVal);
+            HomeFragment.adapter.updateAccountAmount(listPosition, -transAmountVal);
         }
         finish();
         overridePendingTransition(R.anim.top_in, R.anim.bottom_out);

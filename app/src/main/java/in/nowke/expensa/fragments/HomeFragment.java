@@ -27,8 +27,10 @@ import java.util.List;
 import in.nowke.expensa.MainActivity;
 import in.nowke.expensa.R;
 import in.nowke.expensa.activities.AccountDetailActivity;
+import in.nowke.expensa.activities.AddAccountActivity;
 import in.nowke.expensa.adapters.AccountDBAdapter;
 import in.nowke.expensa.adapters.AccountListAdapter;
+import in.nowke.expensa.classes.Utilities;
 import in.nowke.expensa.entity.AccountDetail;
 import in.nowke.expensa.classes.ActionCallback;
 import in.nowke.expensa.classes.ClickListener;
@@ -51,7 +53,7 @@ public class HomeFragment extends Fragment {
     private TextView emptyViewText;
     private ImageView emptyViewImage;
 
-    private ActionMode mActionMode;
+    private static ActionMode mActionMode;
     private int selectedItem;
 
     private int statusBarColor;
@@ -71,8 +73,8 @@ public class HomeFragment extends Fragment {
         mAccountList = (RecyclerView) rootView.findViewById(R.id.accountListRecycler);
         adapter = new AccountListAdapter(getActivity(), getData(1), emptyView);
         mAccountList.setAdapter(adapter);
-        mAccountList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mAccountList.setItemAnimator(new SlideInRightAnimator());
+        mAccountList.setLayoutManager(new LinearLayoutManager(getActivity()));;
+        mAccountList.setItemAnimator(new Utilities.AccountSlideInAnimator());
         mAccountList.addOnItemTouchListener(new RecyclerTouchListener(getActivity(), mAccountList, new ClickListener() {
             @Override
             public void onClick(View view, int position) {
@@ -93,7 +95,7 @@ public class HomeFragment extends Fragment {
                 if (mActionMode != null) {
                     return;
                 }
-                mActionModeCallback.setClickedView(view);
+                mActionModeCallback.setClickedView(view, position);
                 selectedItem = position;
                 AppCompatActivity parentActivity = (AppCompatActivity) getActivity();
                 mActionMode = parentActivity.startSupportActionMode(mActionModeCallback);
@@ -105,7 +107,7 @@ public class HomeFragment extends Fragment {
         return rootView;
     }
 
-    public boolean finishActionMode() {
+    public static boolean finishActionMode() {
         if (mActionMode != null) {
             mActionMode.finish();
             return true;
@@ -148,9 +150,11 @@ public class HomeFragment extends Fragment {
     private ActionCallback mActionModeCallback = new ActionCallback() {
 
         public View mClickedView;
+        public int mClickedPosition;
 
-        public void setClickedView(View view) {
+        public void setClickedView(View view, int position) {
             mClickedView = view;
+            mClickedPosition = position;
         }
 
         @Override
@@ -192,10 +196,22 @@ public class HomeFragment extends Fragment {
             int id = item.getItemId();
 
             TextView userIdText = (TextView) mClickedView.findViewById(R.id.userId);
+            TextView userNameText = (TextView) mClickedView.findViewById(R.id.userName);
             int uid = Integer.parseInt(userIdText.getText().toString());
             AccountDBAdapter helper = new AccountDBAdapter(getActivity());
 
             CoordinatorLayout coordinatorLayout = (CoordinatorLayout) getActivity().findViewById(R.id.main_content);
+
+            if (id == R.id.action_editor) {
+                int userIconId = helper.getIconById(uid);
+                Intent editAccountIntent = new Intent(getActivity(), AddAccountActivity.class);
+                editAccountIntent.putExtra("User_id", uid);
+                editAccountIntent.putExtra("User_icon_id", userIconId);
+                editAccountIntent.putExtra("LIST_POSITION", mClickedPosition);
+                editAccountIntent.putExtra("User_name", userNameText.getText().toString());
+                startActivity(editAccountIntent);
+                return true;
+            }
 
             if (id == R.id.action_remover) {
                 helper.trashAccount(uid);

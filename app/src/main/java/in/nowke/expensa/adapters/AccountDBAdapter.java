@@ -319,6 +319,15 @@ public class AccountDBAdapter {
         int count = db.update(AccountDBHelper.TABLE_ACCOUNT, contentValues, AccountDBHelper.USER_ID + " =? ", whereArgs );
     }
 
+    public void editUser(int userId, String newUserName, int newUserIconId) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(AccountDBHelper.USER_NAME, newUserName);
+        contentValues.put(AccountDBHelper.USER_ICON_ID, newUserIconId);
+        String[] whereArgs = {String.valueOf(userId)};
+        db.update(AccountDBHelper.TABLE_ACCOUNT, contentValues, AccountDBHelper.USER_ID + " =? ", whereArgs);
+    }
+
     static class AccountDBHelper extends SQLiteOpenHelper {
 
         // ACCOUNT TYPES

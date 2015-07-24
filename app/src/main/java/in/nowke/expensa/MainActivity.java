@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -46,10 +47,6 @@ public class MainActivity extends AppCompatActivity {
 
         if (isFirstTime()) {
             setContentView(R.layout.activity_intro);
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                this.setStatusBarColor(R.color.colorPrimary, true);
-            }
         }
         else {
             showMainWindow();
@@ -193,6 +190,8 @@ public class MainActivity extends AppCompatActivity {
         if (mDrawerLayout != null) {
             mDrawerLayout.setStatusBarBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
         }
+        window.setNavigationBarColor(getResources().getColor(statusBarColor));
+        window.setStatusBarColor(getResources().getColor(statusBarColor));
     }
 
 
@@ -233,6 +232,7 @@ public class MainActivity extends AppCompatActivity {
                                                 fabHideShow(1);
                                                 getSupportActionBar().setTitle(getResources().getString(R.string.title_activity_main_account));
 //                                                mToolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+
 //                                                MainActivity.this.setStatusBarColor(R.color.colorPrimaryDark, false);
 
                                                 break;

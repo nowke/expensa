@@ -101,9 +101,19 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
         emptyView.setVisibility(getItemCount() == 0 ? View.VISIBLE : View.GONE);
     }
 
-    public void updateAccount(int position, Double amount) {
+    public void updateAccountAmount(int position, Double amount) {
         AccountDetail currentAccount = data.get(position);
         currentAccount.user_balance += amount;
+        notifyItemChanged(position);
+    }
+
+    public void updateAccountNameAndIcon(int position, String accountName, int iconId) {
+        AccountDetail currentAccount = data.get(position);
+        currentAccount.user_name = accountName;
+        currentAccount.user_icon_id = iconId;
+//        if (iconId < 16) {
+//            Drawable icDrawable = MrVector.inflate(context.getResources(), avatarIcons.getAvatarIcon(current.user_icon_id));
+//        }
         notifyItemChanged(position);
     }
 

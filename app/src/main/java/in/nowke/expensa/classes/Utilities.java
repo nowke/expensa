@@ -5,6 +5,8 @@ import android.text.format.DateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import jp.wasabeef.recyclerview.animators.SlideInRightAnimator;
+
 /**
  * Created by nav on 26/6/15.
  */
@@ -15,6 +17,15 @@ public class Utilities {
         cal.setTimeInMillis(time);
         String date = DateFormat.format(dateFormat, cal).toString();
         return date;
+    }
+
+    public static class AccountSlideInAnimator extends SlideInRightAnimator {
+        public AccountSlideInAnimator() {
+            this.setAddDuration(400);
+            this.setChangeDuration(200);
+            this.setRemoveDuration(200);
+            this.setMoveDuration(200);
+        }
     }
 
     public static long getCurrentTimeStamp() {
