@@ -14,7 +14,11 @@ import com.amulyakhare.textdrawable.TextDrawable;
 import com.telly.mrvector.MrVector;
 
 import java.util.Collections;
+import java.util.Currency;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.nowke.expensa.MainActivity;
@@ -35,7 +39,6 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
     private Drawable drawable;
     private TextDrawable textDrawable;
     private View emptyView;
-
     List<AccountDetail> data = Collections.emptyList();
 
     public AccountListAdapter(Context context, List<AccountDetail> data, View emptyView) {
@@ -81,7 +84,6 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
             holder.userBalance.setTextColor(context.getResources().getColor(R.color.colorMaterialRed));
             holder.userBalance.setText(Html.fromHtml(String.valueOf(Math.abs(current.user_balance)) + " &darr;"));
         }
-
     }
 
     @Override

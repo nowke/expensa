@@ -137,6 +137,10 @@ public class HomeFragment extends Fragment {
         return helper.getAccountInfo(accountType);
     }
 
+    public ActionMode.Callback getActionModeCallback() {
+        return mActionModeCallback;
+    }
+
     public void setAccountListAdapter(int accountType) {
         adapter = new AccountListAdapter(getActivity(), getData(accountType), emptyView);
         mAccountList.swapAdapter(adapter, false);

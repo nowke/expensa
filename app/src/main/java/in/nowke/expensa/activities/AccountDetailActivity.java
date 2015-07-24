@@ -17,6 +17,7 @@ import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -32,7 +33,8 @@ import in.nowke.expensa.classes.AvatarIcons;
 import in.nowke.expensa.classes.Message;
 import in.nowke.expensa.entity.TransactionDetail;
 
-public class AccountDetailActivity extends AppCompatActivity {;
+public class AccountDetailActivity extends AppCompatActivity {
+    ;
 
     public static TransactionListAdapter adapter;
 
@@ -56,6 +58,7 @@ public class AccountDetailActivity extends AppCompatActivity {;
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_account_detail);
+
         userID = getIntent().getStringExtra("USER_ID");
         listPosition = getIntent().getIntExtra("LIST_POSITION", -1);
 
@@ -80,51 +83,49 @@ public class AccountDetailActivity extends AppCompatActivity {;
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 1) {
-            if (resultCode == RESULT_OK) {
-                String newUserName = data.getStringExtra("new_user_name");
-                int newIconId = data.getIntExtra("new_icon_id", -1);
-                userName = newUserName;
-                iconId = newIconId;
+        if (requestCode == 1 && resultCode == RESULT_OK) {
 
-                // UPDATE VIEWS
-                collapsingToolbar.setTitle(newUserName);
-                int newBackgroundColor = avatarIcons.getBackgroundColor(newIconId);
-                if (newIconId < 16) {
-                    drawable = MrVector.inflate(getResources(), avatarIcons.getAvatarIcon(newIconId));
-                    detailImage.setImageDrawable(drawable);
-                    detailImage.setBackgroundColor(getResources().getColor(newBackgroundColor));
-                }
-                else {
-                    detailImage.setImageDrawable(null);
-                    detailImage.setBackgroundColor(getResources().getColor(newBackgroundColor));
-                }
-                collapsingToolbar.setBackgroundColor(getResources().getColor(newBackgroundColor));
-                collapsingToolbar.setContentScrimColor(getResources().getColor(newBackgroundColor));
+            String newUserName = data.getStringExtra("new_user_name");
+            int newIconId = data.getIntExtra("new_icon_id", -1);
+            userName = newUserName;
+            iconId = newIconId;
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    setStatusBarColor(avatarIcons.getBackgroundColorDark(newIconId));
-                }
-
-                if (!avatarIcons.isTextColorLight(newIconId)) {
-                    collapsingToolbar.setExpandedTitleColor(getResources().getColor(R.color.colorPrimaryText));
-                    collapsingToolbar.setCollapsedTitleTextColor(getResources().getColor(R.color.colorPrimaryText));
-
-                    // This is temporary FIX ASAP using themes
-                    final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-                    upArrow.setColorFilter(getResources().getColor(R.color.colorPrimaryText), PorterDuff.Mode.SRC_ATOP);
-                    getSupportActionBar().setHomeAsUpIndicator(upArrow);
-                }
-                else {
-                    collapsingToolbar.setExpandedTitleColor(Color.WHITE);
-                    collapsingToolbar.setCollapsedTitleTextColor(Color.WHITE);
-
-                    // This is temporary FIX ASAP using themes
-                    final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-                    upArrow.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
-                    getSupportActionBar().setHomeAsUpIndicator(upArrow);
-                }
+            // UPDATE VIEWS
+            collapsingToolbar.setTitle(newUserName);
+            int newBackgroundColor = avatarIcons.getBackgroundColor(newIconId);
+            if (newIconId < 16) {
+                drawable = MrVector.inflate(getResources(), avatarIcons.getAvatarIcon(newIconId));
+                detailImage.setImageDrawable(drawable);
+                detailImage.setBackgroundColor(getResources().getColor(newBackgroundColor));
+            } else {
+                detailImage.setImageDrawable(null);
+                detailImage.setBackgroundColor(getResources().getColor(newBackgroundColor));
             }
+            collapsingToolbar.setBackgroundColor(getResources().getColor(newBackgroundColor));
+            collapsingToolbar.setContentScrimColor(getResources().getColor(newBackgroundColor));
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                setStatusBarColor(avatarIcons.getBackgroundColorDark(newIconId));
+            }
+
+            if (!avatarIcons.isTextColorLight(newIconId)) {
+                collapsingToolbar.setExpandedTitleColor(getResources().getColor(R.color.colorPrimaryText));
+                collapsingToolbar.setCollapsedTitleTextColor(getResources().getColor(R.color.colorPrimaryText));
+
+                // This is temporary FIX ASAP using themes
+                final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+                upArrow.setColorFilter(getResources().getColor(R.color.colorPrimaryText), PorterDuff.Mode.SRC_ATOP);
+                getSupportActionBar().setHomeAsUpIndicator(upArrow);
+            } else {
+                collapsingToolbar.setExpandedTitleColor(Color.WHITE);
+                collapsingToolbar.setCollapsedTitleTextColor(Color.WHITE);
+
+                // This is temporary FIX ASAP using themes
+                final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+                upArrow.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+                getSupportActionBar().setHomeAsUpIndicator(upArrow);
+            }
+
         }
     }
 
@@ -149,8 +150,7 @@ public class AccountDetailActivity extends AppCompatActivity {;
         if (iconId < 16) {
             drawable = MrVector.inflate(getResources(), avatarIcons.getAvatarIcon(iconId));
             detailImage.setImageDrawable(drawable);
-        }
-        else {
+        } else {
             detailImage.setImageDrawable(null);
             detailImage.setBackgroundColor(getResources().getColor(backgroundColor));
         }

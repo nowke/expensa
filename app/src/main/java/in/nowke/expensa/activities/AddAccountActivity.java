@@ -43,7 +43,6 @@ public class AddAccountActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         overridePendingTransition(R.anim.bottom_in, R.anim.top_out);
         setContentView(R.layout.activity_add_account);
-
         editUserId = -1;
         editUserListPos = -1;
         editFromDetail = false;

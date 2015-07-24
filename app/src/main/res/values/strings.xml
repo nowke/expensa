@@ -44,5 +44,5 @@
 
     <!-- Misc -->
     <string name="account_title">Account Title</string>
-    <integer name="activity_anim_duration">150</integer>
+    <integer name="activity_anim_duration">100</integer>
 </resources>
