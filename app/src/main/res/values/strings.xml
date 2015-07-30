@@ -7,6 +7,8 @@
     <string name="empty_text_home">Accounts you add appear here</string>
     <string name="empty_text_archive">Your archived accounts appear here</string>
     <string name="empty_text_trash">No accounts in Recycle Bin!</string>
+    <string name="empty_text_credit">No accounts with credit!</string>
+    <string name="empty_text_debit">No accounts with debit!</string>
 
     <!-- Actions & Buttons -->
     <string name="action_help">Help</string>
@@ -29,6 +31,8 @@
     <string name="nav_home">Home</string>
     <string name="nav_archive">Archive</string>
     <string name="nav_trash">Deleted</string>
+    <string name="nav_credit">Credit</string>
+    <string name="nav_debit">Debit</string>
     <string name="nav_settings">Settings</string>
     <string name="nav_help_feedback"><![CDATA[Help & Feedback]]></string>
 

@@ -132,6 +132,14 @@ public class HomeFragment extends Fragment {
                 emptyViewText.setText(getResources().getString(R.string.empty_text_trash));
                 emptyViewImage.setImageResource(R.drawable.ic_delete_white_big);
                 break;
+            case 4:
+                emptyViewText.setText(getResources().getString(R.string.empty_text_credit));
+                emptyViewImage.setImageResource(R.drawable.ic_account_box_white_big);
+                break;
+            case 5:
+                emptyViewText.setText(getResources().getString(R.string.empty_text_debit));
+                emptyViewImage.setImageResource(R.drawable.ic_account_box_white_big);
+                break;
         }
 
         return helper.getAccountInfo(accountType);

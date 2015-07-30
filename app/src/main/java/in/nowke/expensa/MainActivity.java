@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     HomeFragment homeFragment;
     private static FloatingActionButton fabAddAccount;
     private static NavigationView navigationView;
+    private MenuItem mPreviousCheckedItem;
     TextView accountBalance;
 
     @Override
@@ -72,8 +73,6 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case android.R.id.home:
                 mDrawerLayout.openDrawer(GravityCompat.START);
-                return true;
-            case R.id.action_search:
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -213,11 +212,18 @@ public class MainActivity extends AppCompatActivity {
      * @param navigationView
      */
     private void setupDrawerContent(final NavigationView navigationView) {
+        mPreviousCheckedItem = navigationView.getMenu().findItem(R.id.nav_home);
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(final MenuItem menuItem) {
                         menuItem.setChecked(true);
+                        if (mPreviousCheckedItem != null && mPreviousCheckedItem != menuItem && menuItem.isCheckable()) {
+                            mPreviousCheckedItem.setChecked(false);
+                        }
+                        if (menuItem.isCheckable()) {
+                            mPreviousCheckedItem = menuItem;
+                        }
                         mDrawerLayout.closeDrawers();
                         new Thread() {
                             @Override
@@ -251,6 +257,17 @@ public class MainActivity extends AppCompatActivity {
 //                                                mToolbar.setBackgroundColor(getResources().getColor(R.color.colorDeleted));
 //                                                MainActivity.this.setStatusBarColor(R.color.colorDeletedDark, false);
 
+                                                break;
+                                            case R.id.nav_credit:
+                                                homeFragment.setAccountListAdapter(4);
+                                                fabHideShow(0);
+                                                getSupportActionBar().setTitle(getResources().getString(R.string.nav_credit));
+                                                break;
+
+                                            case R.id.nav_debit:
+                                                homeFragment.setAccountListAdapter(5);
+                                                fabHideShow(0);
+                                                getSupportActionBar().setTitle(getResources().getString(R.string.nav_debit));
                                                 break;
                                         }
 

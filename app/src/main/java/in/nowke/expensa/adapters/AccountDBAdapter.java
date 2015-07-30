@@ -79,7 +79,7 @@ public class AccountDBAdapter {
 
             buffer.append(cid + ". " + uname + "-" + ubalance + "\n");
         }
-
+        cursor.close();
         return buffer.toString();
     }
 
@@ -105,12 +105,13 @@ public class AccountDBAdapter {
 
             buffer.append(tid + "," + uid + ":" + tAmt + ", " + tType + "= " + transDesc + "\n" );
         }
+        cursor.close();
         return buffer.toString();
     }
 
     public List<AccountDetail> getAccountInfo(int accountType) {
         SQLiteDatabase db = helper.getReadableDatabase();
-
+        Cursor cursor;
         String columns[] = {
                 AccountDBHelper.USER_ID,
                 AccountDBHelper.USER_NAME,
@@ -119,8 +120,16 @@ public class AccountDBAdapter {
                 AccountDBHelper.USER_ACCOUNT_TYPE,
                 AccountDBHelper.USER_CREATED
         };
-        Cursor cursor = db.query(AccountDBHelper.TABLE_ACCOUNT, columns, AccountDBHelper.USER_ACCOUNT_TYPE + "=" + accountType, null, null, null,
-                AccountDBHelper.USER_CREATED + " DESC");
+        if (accountType <= 3) {
+            cursor = db.query(AccountDBHelper.TABLE_ACCOUNT, columns, AccountDBHelper.USER_ACCOUNT_TYPE + "=" + accountType, null, null, null,
+                    AccountDBHelper.USER_CREATED + " DESC");
+        }
+        else if (accountType == 4) {
+            cursor = db.query(AccountDBHelper.TABLE_ACCOUNT, columns, AccountDBHelper.USER_BALANCE + " >= 0", null, null, null, AccountDBHelper.USER_BALANCE + " DESC" );
+        }
+        else {
+            cursor = db.query(AccountDBHelper.TABLE_ACCOUNT, columns, AccountDBHelper.USER_BALANCE + " < 0", null, null, null, AccountDBHelper.USER_BALANCE + " DESC" );
+        }
 
         List<AccountDetail> accInfo = new ArrayList<>();
 
@@ -149,6 +158,7 @@ public class AccountDBAdapter {
 
             accInfo.add(accDetail);
         }
+        cursor.close();
 
         return accInfo;
     }
@@ -191,7 +201,7 @@ public class AccountDBAdapter {
 
             transInfo.add(transDetail);
         }
-
+        cursor.close();
         return transInfo;
     }
 
@@ -215,6 +225,7 @@ public class AccountDBAdapter {
                 balance -= tAmount;
             }
         }
+        cursor.close();
         return balance;
     }
 
@@ -230,6 +241,7 @@ public class AccountDBAdapter {
             Double userBalance = cursor.getDouble(index);
             totalBalance += userBalance;
         }
+        cursor.close();
         return totalBalance;
     }
 
@@ -244,6 +256,7 @@ public class AccountDBAdapter {
             int index = cursor.getColumnIndex(AccountDBHelper.USER_NAME);
             uName = cursor.getString(index);
         }
+        cursor.close();
         return uName;
     }
 
@@ -258,6 +271,7 @@ public class AccountDBAdapter {
             int index = cursor.getColumnIndex(AccountDBHelper.USER_ICON_ID);
             iconId = cursor.getInt(index);
         }
+        cursor.close();
         return iconId;
     }
 
@@ -272,6 +286,7 @@ public class AccountDBAdapter {
             int index = cursor.getColumnIndex(AccountDBHelper.USER_CREATED);
             uCreated = cursor.getString(index);
         }
+        cursor.close();
         return uCreated;
     }
 
@@ -286,6 +301,7 @@ public class AccountDBAdapter {
             int index = cursor.getColumnIndex(AccountDBHelper.USER_BALANCE);
             uName = cursor.getDouble(index);
         }
+        cursor.close();
         return uName;
     }
 
