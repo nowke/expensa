@@ -22,6 +22,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import in.nowke.expensa.MainActivity;
@@ -30,6 +33,7 @@ import in.nowke.expensa.activities.AccountDetailActivity;
 import in.nowke.expensa.activities.AddAccountActivity;
 import in.nowke.expensa.adapters.AccountDBAdapter;
 import in.nowke.expensa.adapters.AccountListAdapter;
+import in.nowke.expensa.adapters.AccountListSectionedAdapter;
 import in.nowke.expensa.classes.Utilities;
 import in.nowke.expensa.entity.AccountDetail;
 import in.nowke.expensa.classes.ActionCallback;
@@ -82,19 +86,22 @@ public class HomeFragment extends Fragment {
                     // Finished Action Mode
                     return;
                 }
+                if (!view.isClickable()) { return; }
                 TextView userIdText = (TextView) view.findViewById(R.id.userId);
                 Intent intent = new Intent(getActivity(), AccountDetailActivity.class);
                 intent.putExtra("USER_ID", userIdText.getText().toString());
                 intent.putExtra("LIST_POSITION", position);
 
                 startActivity(intent);
+
             }
 
             @Override
             public void onLongClick(View view, int position) {
-                if (mActionMode != null) {
+                if (mActionMode != null || !view.isClickable()) {
                     return;
                 }
+
                 mActionModeCallback.setClickedView(view, position);
                 selectedItem = position;
                 AppCompatActivity parentActivity = (AppCompatActivity) getActivity();
@@ -150,9 +157,22 @@ public class HomeFragment extends Fragment {
     }
 
     public void setAccountListAdapter(int accountType) {
-        adapter = new AccountListAdapter(getActivity(), getData(accountType), emptyView);
-        mAccountList.swapAdapter(adapter, false);
-        emptyView.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+        if (accountType <= 3) {
+            adapter = new AccountListAdapter(getActivity(), getData(accountType), emptyView);
+            mAccountList.swapAdapter(adapter, false);
+            emptyView.setVisibility(adapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+        }
+        else {
+            List<List<AccountDetail>> splittedAccounts = Utilities.splitAccounts(getData(accountType));
+            List<AccountDetail> mainAccountData = splittedAccounts.get(0);
+            List<AccountDetail> archiveAccountData = splittedAccounts.get(1);
+            List<AccountDetail> trashAccountData = splittedAccounts.get(2);
+
+            AccountListSectionedAdapter mAdapter;
+            mAdapter = new AccountListSectionedAdapter(getActivity(), mainAccountData, archiveAccountData, trashAccountData, emptyView);
+            mAccountList.swapAdapter(mAdapter, false);
+            emptyView.setVisibility(mAdapter.getItemCount() == 0 ? View.VISIBLE : View.GONE);
+        }
     }
 
     public static void scrollListToTop() {

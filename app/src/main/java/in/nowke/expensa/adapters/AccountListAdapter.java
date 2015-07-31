@@ -113,9 +113,6 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
         AccountDetail currentAccount = data.get(position);
         currentAccount.user_name = accountName;
         currentAccount.user_icon_id = iconId;
-//        if (iconId < 16) {
-//            Drawable icDrawable = MrVector.inflate(context.getResources(), avatarIcons.getAvatarIcon(current.user_icon_id));
-//        }
         notifyItemChanged(position);
     }
 

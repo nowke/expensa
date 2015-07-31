@@ -2,9 +2,14 @@ package in.nowke.expensa.classes;
 
 import android.text.format.DateFormat;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
+import in.nowke.expensa.entity.AccountDetail;
 import jp.wasabeef.recyclerview.animators.SlideInRightAnimator;
 
 /**
@@ -26,6 +31,31 @@ public class Utilities {
             this.setRemoveDuration(200);
             this.setMoveDuration(200);
         }
+    }
+
+    public static List<List<AccountDetail>> splitAccounts(List<AccountDetail> data) {
+        List<List<AccountDetail>> splittedAccounts = new ArrayList<>();
+        List<AccountDetail> mainAccounts = new ArrayList<>();
+        List<AccountDetail> archiveAccounts = new ArrayList<>();
+        List<AccountDetail> trashAccounts = new ArrayList<>();
+
+        for (AccountDetail account : data) {
+            switch (account.user_account_type) {
+                case 1:
+                    mainAccounts.add(account);
+                    break;
+                case 2:
+                    archiveAccounts.add(account);
+                    break;
+                case 3:
+                    trashAccounts.add(account);
+            }
+        }
+        splittedAccounts.add(mainAccounts);
+        splittedAccounts.add(archiveAccounts);
+        splittedAccounts.add(trashAccounts);
+
+        return splittedAccounts;
     }
 
     public static long getCurrentTimeStamp() {
