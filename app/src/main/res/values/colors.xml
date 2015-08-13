@@ -17,9 +17,13 @@
     <!--<color name="colorPrimaryDark">#300030</color>-->
     <!--<color name="colorAccent">#C04848</color>-->
 
-    <color name="colorPrimary">#011627</color>
-    <color name="colorPrimaryDark">#000B13</color>
-    <color name="colorAccent">#e71d36</color>
+    <!--<color name="colorPrimary">#011627</color>-->
+    <!--<color name="colorPrimaryDark">#000B13</color>-->
+    <!--<color name="colorAccent">#e71d36</color>-->
+
+    <color name="colorPrimary">#248F8D</color>
+    <color name="colorPrimaryDark">#0C7F7F</color>
+    <color name="colorAccent">#605063</color>
 
     <color name="colorHighlight">#E0E0E0</color>
     <color name="colorPrimaryText">#212121</color>
