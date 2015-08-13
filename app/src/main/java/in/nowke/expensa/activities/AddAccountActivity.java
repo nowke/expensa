@@ -7,11 +7,14 @@ import android.support.v7.app.ActionBar;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.TextView;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.nowke.expensa.MainActivity;
@@ -76,6 +79,16 @@ public class AddAccountActivity extends AppCompatActivity {
                 else {
                     mAddAccountName.setErrorEnabled(false);
                 }
+            }
+        });
+        mAddAccountName.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                    Utilities.hideKeyboard(getApplicationContext(), mAddAccountName.getEditText());
+                    return true;
+                }
+                return false;
             }
         });
 

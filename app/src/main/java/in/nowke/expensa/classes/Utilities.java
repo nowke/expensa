@@ -1,6 +1,9 @@
 package in.nowke.expensa.classes;
 
+import android.content.Context;
 import android.text.format.DateFormat;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -88,5 +91,13 @@ public class Utilities {
         else {
             return getDateFromFormat(time, "MMM dd");
         }
+    }
+
+    public static void hideKeyboard(Context context, EditText editText) {
+        // Hides the Keyboard input from 'editText'
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+
+        imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
     }
 }
