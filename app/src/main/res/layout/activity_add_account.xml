@@ -71,5 +71,14 @@
 
     </LinearLayout>
 
+    <Button
+        android:id="@+id/saveOrUpdate"
+        android:onClick="saveOrUpdate"
+        style="@style/SaveUpdateButtonStyle"
+        android:enabled="false"
+        android:text="Save"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="56dp" />
 
 </RelativeLayout>

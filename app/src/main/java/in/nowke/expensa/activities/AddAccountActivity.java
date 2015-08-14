@@ -7,12 +7,15 @@ import android.support.v7.app.ActionBar;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
 
@@ -31,6 +34,7 @@ public class AddAccountActivity extends AppCompatActivity {
     Toolbar mToolbar;
     TextInputLayout mAddAccountName;
     CircleImageView circleImageView;
+    private Button saveUpdateButton;
     GridView mAvatarChooser;
     public static int clickedPos;
 
@@ -60,6 +64,8 @@ public class AddAccountActivity extends AppCompatActivity {
         }
 
         clickedPos = -1;
+        saveUpdateButton = (Button) findViewById(R.id.saveOrUpdate);
+
         // ACTION BAR
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setupAppBar(mToolbar);
@@ -79,6 +85,22 @@ public class AddAccountActivity extends AppCompatActivity {
                 else {
                     mAddAccountName.setErrorEnabled(false);
                 }
+            }
+        });
+        mAddAccountName.getEditText().addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                saveUpdateButton.setEnabled(!s.toString().equals(""));
             }
         });
         mAddAccountName.getEditText().setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -114,15 +136,12 @@ public class AddAccountActivity extends AppCompatActivity {
 
         if (editUserId != -1) {
             mAddAccountName.getEditText().setText(editUserName);
+            saveUpdateButton.setText("Update");
             mAvatarChooser.performItemClick(mAvatarChooser.getAdapter().getView(editUserIconId, null, null), editUserIconId, mAvatarChooser.getAdapter().getItemId(editUserIconId));
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate((editUserId == -1) ? R.menu.menu_add_account : R.menu.menu_edit_account, menu);
-        return true;
+        else {
+            mAvatarChooser.performItemClick(mAvatarChooser.getAdapter().getView(0, null, null), 0, mAvatarChooser.getAdapter().getItemId(0));
+        }
     }
 
     @Override
@@ -138,19 +157,17 @@ public class AddAccountActivity extends AppCompatActivity {
             return true;
         }
 
-        if (id == R.id.action_save) {
-            String accountName = mAddAccountName.getEditText().getText().toString();
-            addAccount(accountName, clickedPos);
-            return true;
-        }
-
-        if (id == R.id.action_update) {
-            String newAccountName = mAddAccountName.getEditText().getText().toString();
-            updateAccount(newAccountName, clickedPos, editUserListPos);
-            return true;
-        }
-
         return super.onOptionsItemSelected(item);
+    }
+
+    public void saveOrUpdate(View view) {
+        String accountName = mAddAccountName.getEditText().getText().toString();
+        if (editUserId == -1) {
+            addAccount(accountName, clickedPos);
+        }
+        else {
+            updateAccount(accountName, clickedPos, editUserListPos);
+        }
     }
 
     private void updateAccount(final String newAccountName, final int clickedPos, final int listPos) {

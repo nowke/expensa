@@ -134,8 +134,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getApplicationContext(), AddAccountActivity.class));
-                overridePendingTransition(R.anim.pull_in_right, R.anim.push_out_left);
-
             }
         });
 

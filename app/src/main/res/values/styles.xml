@@ -31,4 +31,10 @@
         <item name="android:shadowRadius">4</item>
     </style>
 
+    <style name="SaveUpdateButtonStyle">
+        <item name="android:background">@drawable/save_update_button_background</item>
+        <item name="android:textColor">@drawable/save_update_button_text_color</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
 </resources>
