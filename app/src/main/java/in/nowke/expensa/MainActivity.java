@@ -133,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
         fabAddAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                HomeFragment.finishActionMode();
                 startActivity(new Intent(getApplicationContext(), AddAccountActivity.class));
             }
         });

@@ -5,26 +5,20 @@
     android:layout_height="match_parent"
     tools:context="in.nowke.expensa.activities.AddAccountActivity">
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbar"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorHighlight"
+        app:contentInsetStart="72dp"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/Theme.AppCompat.Light" />
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/colorPrimary"
-            app:contentInsetStart="72dp"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
-
-    </android.support.design.widget.AppBarLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/appbar"
+        android:layout_below="@id/toolbar"
         android:nestedScrollingEnabled="true"
         android:orientation="vertical"
         android:padding="16dp"
@@ -41,8 +35,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/account_title"
-                android:inputType="textCapWords"
                 android:imeOptions="actionNext"
+                android:inputType="textCapWords"
                 android:selectAllOnFocus="true" />
 
         </android.support.design.widget.TextInputLayout>
@@ -58,11 +52,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"
+            android:clipToPadding="false"
             android:columnWidth="72dp"
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:listSelector="#00000000"
             android:numColumns="auto_fit"
+            android:paddingBottom="48dp"
             android:scrollbarSize="0dp"
             android:stretchMode="columnWidth"
             android:verticalSpacing="8dp">
@@ -71,14 +67,15 @@
 
     </LinearLayout>
 
+
     <Button
         android:id="@+id/saveOrUpdate"
-        android:onClick="saveOrUpdate"
         style="@style/SaveUpdateButtonStyle"
-        android:enabled="false"
-        android:text="Save"
-        android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
-        android:layout_height="56dp" />
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:enabled="false"
+        android:onClick="saveOrUpdate"
+        android:text="Save" />
 
 </RelativeLayout>

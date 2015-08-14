@@ -1,6 +1,8 @@
 package in.nowke.expensa.activities;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.os.Build;
 import android.os.SystemClock;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
@@ -13,6 +15,8 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -50,6 +54,10 @@ public class AddAccountActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         overridePendingTransition(R.anim.bottom_in, R.anim.top_out);
         setContentView(R.layout.activity_add_account);
+
+        // STATUS BAR COLOR
+        clearStatusBarColor();
+
         editUserId = -1;
         editUserListPos = -1;
         editFromDetail = false;
@@ -72,6 +80,8 @@ public class AddAccountActivity extends AppCompatActivity {
         if (editUserId != -1) {
             getSupportActionBar().setTitle(getResources().getString(R.string.title_activity_edit_account));
         }
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black_24dp);
 
         // TEXT INPUT LAYOUT
         mAddAccountName = (TextInputLayout) findViewById(R.id.textinputAddAccountName);
@@ -257,5 +267,13 @@ public class AddAccountActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void clearStatusBarColor() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) { return;
+        }
+        Window window = this.getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
     }
 }

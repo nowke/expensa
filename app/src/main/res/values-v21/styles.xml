@@ -20,7 +20,7 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:colorControlHighlight">@color/colorHighlight</item>
         <!--<item name="android:actionModeCloseButtonStyle">@color/colorPrimaryDark</item>-->
-        <!--<item name="android:actionModeStyle">@color/colorPrimaryDark</item>-->
+        <!--<item name="android:actionModeStyle">@style/ActionBarPopupThemeOverlay</item>-->
         <item name="android:actionBarPopupTheme">@style/ThemeOverlay.AppCompat.Light</item>
     </style>
 

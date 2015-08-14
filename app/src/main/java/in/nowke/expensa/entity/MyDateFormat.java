@@ -1,5 +1,9 @@
 package in.nowke.expensa.entity;
 
+import java.text.DateFormatSymbols;
+import java.util.Calendar;
+import java.util.Locale;
+
 /**
  * Created by nav on 11/7/15.
  */
@@ -32,6 +36,7 @@ public class MyDateFormat {
     }
 
     private void setDateStr() {
-        dateStr = "" + dayOfMonth + "-" + monthOfYear + "-" + year;
+        String mon = DateFormatSymbols.getInstance().getShortMonths()[monthOfYear-1];
+        dateStr = mon + " " + dayOfMonth  + ", " + year;
     }
 }

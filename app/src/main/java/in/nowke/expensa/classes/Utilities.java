@@ -70,6 +70,16 @@ public class Utilities {
         return Integer.parseInt(curYear);
     }
 
+    public static int getCurrentDay() {
+        String curDay = getDateFromFormat(getCurrentTimeStamp(), "dd");
+        return Integer.parseInt(curDay);
+    }
+
+    public static int getCurrentMonth() {
+        String curMonth = getDateFromFormat(getCurrentTimeStamp(), "M");
+        return Integer.parseInt(curMonth);
+    }
+
     public static int getYear(long time) {
         return Integer.parseInt(getDateFromFormat(time, "yyyy"));
     }

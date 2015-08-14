@@ -48,5 +48,8 @@
 
     <!-- Misc -->
     <string name="account_title">Account Title</string>
+    <string name="trans_title">Title</string>
+    <string name="trans_amount">Amount</string>
+    <string name="spinner_title">Choose Date</string>
     <integer name="activity_anim_duration">250</integer>
 </resources>
