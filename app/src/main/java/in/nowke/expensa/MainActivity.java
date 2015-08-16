@@ -2,20 +2,26 @@ package in.nowke.expensa;
 
 import android.annotation.TargetApi;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,15 +30,32 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.plus.Plus;
+import com.google.android.gms.plus.model.people.Person;
 import com.telly.mrvector.MrVector;
 
+import java.io.InputStream;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 import in.nowke.expensa.activities.AddAccountActivity;
 import in.nowke.expensa.adapters.AccountDBAdapter;
 import in.nowke.expensa.classes.Message;
 import in.nowke.expensa.fragments.HomeFragment;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+
+    private static final int RC_SIGN_IN = 0;
+    private static boolean firstTime = false;
+    private boolean mIntentInProgress;
+    private boolean mSignInClicked;
+    private ConnectionResult mConnectionResult;
+    private GoogleApiClient mGoogleApiClient;
+    private Bitmap mUserPic;
 
     Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
@@ -42,11 +65,24 @@ public class MainActivity extends AppCompatActivity {
     private MenuItem mPreviousCheckedItem;
     TextView accountBalance;
 
+    private TextView googleUserNameText;
+    private TextView googleUserEmailText;
+
+    private CircleImageView avatarCircle;
+    private Drawable account_circle_drawable;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this).addApi(Plus.API, Plus.PlusOptions.builder().build())
+                .addScope(Plus.SCOPE_PLUS_LOGIN).build();
+
+
         if (isFirstTime()) {
+            firstTime = true;
             setContentView(R.layout.activity_intro);
         }
         else {
@@ -59,6 +95,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         updateBalance();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mGoogleApiClient.isConnected()) {
+            mGoogleApiClient.disconnect();
+        }
     }
 
     @Override
@@ -199,6 +249,10 @@ public class MainActivity extends AppCompatActivity {
      * @param view
      */
     public void onSkip(View view) {
+        firstTimeFinished();
+    }
+
+    private void firstTimeFinished() {
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean("RanBefore", true);
@@ -277,13 +331,23 @@ public class MainActivity extends AppCompatActivity {
                         return true;
                     }
                 });
-        ImageView avatarCircle = (ImageView) navigationView.findViewById(R.id.accountAvatar);
-        Drawable drawable = MrVector.inflate(getResources(), R.drawable.account_circle);
-        avatarCircle.setImageDrawable(drawable);
+        avatarCircle = (CircleImageView) navigationView.findViewById(R.id.accountAvatar);
+        account_circle_drawable = ContextCompat.getDrawable(this, R.drawable.avatar_default);
+        avatarCircle.setImageDrawable(account_circle_drawable);
 
         accountBalance = (TextView) navigationView.findViewById(R.id.accountBalance);
+        googleUserNameText = (TextView) navigationView.findViewById(R.id.googleUserName);
+        googleUserEmailText = (TextView) navigationView.findViewById(R.id.googleUserEmail);
+
         updateBalance();
 
+        // Get user name & email from storage
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        String googleUserName = preferences.getString("GoogleUserName", "");
+        String googleUserEmail = preferences.getString("GoogleUserEmail", "");
+
+        googleUserNameText.setText(googleUserName);
+        googleUserEmailText.setText(googleUserEmail);
     }
 
     /**
@@ -308,12 +372,141 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
+
+    // SIGN IN
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        mSignInClicked = false;
+//        Toast.makeText(this, "User is connected!", Toast.LENGTH_LONG).show();
+        if (firstTime) {
+            firstTime = false;
+            firstTimeFinished();
+        }
+        getProfileInformation();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        if (!connectionResult.hasResolution()) {
+            GooglePlayServicesUtil.getErrorDialog(connectionResult.getErrorCode(), this,
+                    0).show();
+            return;
+        }
+
+        if (!mIntentInProgress) {
+            // Store the ConnectionResult for later usage
+            mConnectionResult = connectionResult;
+
+            if (mSignInClicked) {
+                // The user has already clicked 'sign-in' so we attempt to
+                // resolve all
+                // errors until the user is signed in, or they cancel.
+                resolveSignInError();
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int responseCode,
+                                    Intent intent) {
+        if (requestCode == RC_SIGN_IN) {
+            if (responseCode != RESULT_OK) {
+                mSignInClicked = false;
+            }
+
+            mIntentInProgress = false;
+
+            if (!mGoogleApiClient.isConnecting()) {
+                mGoogleApiClient.connect();
+            }
+        }
+    }
+
+    public void signInGplus(View view) {
+        if (!mGoogleApiClient.isConnecting()) {
+            mSignInClicked = true;
+            resolveSignInError();
+        }
+    }
+
+    private void resolveSignInError() {
+        if (mConnectionResult.hasResolution()) {
+            try {
+                mIntentInProgress = true;
+                mConnectionResult.startResolutionForResult(this, RC_SIGN_IN);
+            } catch (IntentSender.SendIntentException e) {
+                mIntentInProgress = false;
+                mGoogleApiClient.connect();
+            }
+        }
+    }
+
+    private void getProfileInformation() {
+        try {
+            if (Plus.PeopleApi.getCurrentPerson(mGoogleApiClient) != null) {
+                Person currentPerson = Plus.PeopleApi
+                        .getCurrentPerson(mGoogleApiClient);
+                String personName = currentPerson.getDisplayName();
+                String email = Plus.AccountApi.getAccountName(mGoogleApiClient);
+                String personPhotoUrl = currentPerson.getImage().getUrl();
+
+                googleUserNameText.setText(personName);
+                googleUserEmailText.setText(email);
+
+                // Store for temporary access
+                SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
+                editor.putString("GoogleUserName", personName);
+                editor.putString("GoogleUserEmail", email);
+                editor.apply();
+
+                // Load Picture
+                personPhotoUrl = personPhotoUrl.substring(0,
+                        personPhotoUrl.length() - 2)
+                        + 64;
+                new LoadProfileImage(avatarCircle).execute(personPhotoUrl);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Background Async task to load user profile picture from url
+     * */
+    private class LoadProfileImage extends AsyncTask<String, Void, Bitmap> {
+        CircleImageView bmImage;
+
+        public LoadProfileImage(CircleImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            if (result != null) {
+                bmImage.setImageBitmap(result);
+            }
+            else {
+                bmImage.setImageDrawable(account_circle_drawable);
+            }
+        }
+    }
 }
-
-/**
-
- To Fix:
-    * Landscape Toolbar vertical alignment
-    * Refactor set status bar color
-
- */
