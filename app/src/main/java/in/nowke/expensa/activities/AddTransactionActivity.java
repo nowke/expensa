@@ -1,6 +1,7 @@
 package in.nowke.expensa.activities;
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.os.Build;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.ActionBar;
@@ -31,6 +32,7 @@ import java.util.List;
 
 import in.nowke.expensa.R;
 import in.nowke.expensa.adapters.AccountDBAdapter;
+import in.nowke.expensa.classes.Message;
 import in.nowke.expensa.classes.Utilities;
 import in.nowke.expensa.entity.TransactionDetail;
 import in.nowke.expensa.entity.MyDateFormat;
@@ -49,7 +51,12 @@ public class AddTransactionActivity extends AppCompatActivity implements DatePic
     MyDateFormat date;
 
     String userId;
+    long transId;
     int listPosition;
+    int transListPos;
+
+    private boolean isEdit = false;
+    TransactionDetail transactionDetail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +65,14 @@ public class AddTransactionActivity extends AppCompatActivity implements DatePic
         setContentView(R.layout.activity_add_transaction);
         clearStatusBarColor();
 
+        // FROM INTENT
         userId = getIntent().getStringExtra("TRANS_USER_ID");
         listPosition = getIntent().getIntExtra("USER_LIST_POSITION", -1);
+        if (getIntent().hasExtra("is_edit_trans")) {
+            isEdit = true;
+            transId = getIntent().getLongExtra("Trans_id", -1);
+            transListPos = getIntent().getIntExtra("trans_list_pos", -1);
+        }
 
         dateTextView = (TextView) findViewById(R.id.dateTextView);
         transTitle = (TextInputLayout) findViewById(R.id.textinputTransTitle);
@@ -72,6 +85,23 @@ public class AddTransactionActivity extends AppCompatActivity implements DatePic
         setupAppBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close_black_24dp);
+
+        if (isEdit) {
+            // Get transaction Detail from userId
+            AccountDBAdapter helper = new AccountDBAdapter(this);
+             transactionDetail = helper.getTransactionById(transId);
+
+            getSupportActionBar().setTitle(getResources().getString(R.string.title_activity_edit_transaction));
+            transTitle.getEditText().setText(transactionDetail.transDesc);
+            transAmount.getEditText().setText(transactionDetail.transAmount.toString());
+            saveTrans.setText("Update");
+            saveTrans.setEnabled(true);
+            int tType = transactionDetail.transType;
+            if (tType == 1) {
+                // Debit
+                transType.check(R.id.radioTransDebit);
+            }
+        }
 
         // TEXT WATCHERS
         transTitle.getEditText().addTextChangedListener(new TextWatcher() {
@@ -119,7 +149,7 @@ public class AddTransactionActivity extends AppCompatActivity implements DatePic
 
         // DATE
         date = new MyDateFormat(Utilities.getCurrentDay(), Utilities.getCurrentMonth(), Utilities.getCurrentYear());
-        dateTextView.setText(date.getDateStr());
+        dateTextView.setText(isEdit ? transactionDetail.transDate : date.getDateStr());
     }
 
     private void watchForButtonEnableDisable() {
@@ -182,6 +212,24 @@ public class AddTransactionActivity extends AppCompatActivity implements DatePic
         overridePendingTransition(R.anim.top_in, R.anim.bottom_out);
     }
 
+
+    private void updateTransaction(String transTitleStr, Double aDouble, int transTypeVal, String transDateStr) {
+        AccountDBAdapter helper = new AccountDBAdapter(this);
+        Double newBalance = helper.editTransaction(transId, Integer.parseInt(userId),transTitleStr, aDouble, transTypeVal, transDateStr);
+
+        Intent returnIntent =  new Intent();
+        returnIntent.putExtra("new_trans_title", transTitleStr);
+        returnIntent.putExtra("new_trans_amount", aDouble);
+        returnIntent.putExtra("new_trans_type", transTypeVal);
+        returnIntent.putExtra("new_trans_date", transDateStr);
+        returnIntent.putExtra("new_user_balance", newBalance);
+        returnIntent.putExtra("trans_list_pos", transListPos);
+        setResult(RESULT_OK, returnIntent);
+
+        finish();
+        overridePendingTransition(R.anim.top_in, R.anim.bottom_out);
+    }
+
     public void pickDate(View view) {
         Calendar now = Calendar.getInstance();
         DatePickerDialog dpd = DatePickerDialog.newInstance(
@@ -217,6 +265,7 @@ public class AddTransactionActivity extends AppCompatActivity implements DatePic
     public void saveTransaction(View view) {
         String transTitleStr = transTitle.getEditText().getText().toString();
         String transAmountVal = transAmount.getEditText().getText().toString();
+        String transDateStr = dateTextView.getText().toString();
         int transTypeVal = 0;
         switch (transType.getCheckedRadioButtonId()) {
             case R.id.radioTransCredit:
@@ -227,9 +276,15 @@ public class AddTransactionActivity extends AppCompatActivity implements DatePic
                 break;
         }
         if (date != null && !transTitleStr.isEmpty() && !transAmountVal.isEmpty() && !transAmountVal.equals(".")) {
-            addTransaction(transTitleStr, Double.valueOf(transAmountVal), transTypeVal, date.getDateStr());
+            if (isEdit) {
+                updateTransaction(transTitleStr, Double.valueOf(transAmountVal), transTypeVal, transDateStr);
+            }
+            else {
+                addTransaction(transTitleStr, Double.valueOf(transAmountVal), transTypeVal, transDateStr);
+            }
         }
     }
+
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void clearStatusBarColor() {

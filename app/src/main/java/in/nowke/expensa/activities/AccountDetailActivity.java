@@ -21,7 +21,9 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.telly.mrvector.MrVector;
 
 import java.util.List;
@@ -30,8 +32,11 @@ import in.nowke.expensa.R;
 import in.nowke.expensa.adapters.AccountDBAdapter;
 import in.nowke.expensa.adapters.TransactionListAdapter;
 import in.nowke.expensa.classes.AvatarIcons;
+import in.nowke.expensa.classes.ClickListener;
 import in.nowke.expensa.classes.Message;
+import in.nowke.expensa.classes.RecyclerTouchListener;
 import in.nowke.expensa.entity.TransactionDetail;
+import in.nowke.expensa.fragments.HomeFragment;
 
 public class AccountDetailActivity extends AppCompatActivity {
     ;
@@ -52,6 +57,9 @@ public class AccountDetailActivity extends AppCompatActivity {
     int listPosition;
     int iconId;
     String userName;
+
+    private static final int REQUEST_CODE_EDIT_ACCOUNT = 1;
+    private static final int REQUEST_CODE_EDIT_TRANSACTION = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,49 +91,67 @@ public class AccountDetailActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 1 && resultCode == RESULT_OK) {
 
-            String newUserName = data.getStringExtra("new_user_name");
-            int newIconId = data.getIntExtra("new_icon_id", -1);
-            userName = newUserName;
-            iconId = newIconId;
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case REQUEST_CODE_EDIT_ACCOUNT:
 
-            // UPDATE VIEWS
-            collapsingToolbar.setTitle(newUserName);
-            int newBackgroundColor = avatarIcons.getBackgroundColor(newIconId);
-            if (newIconId < 16) {
-                drawable = MrVector.inflate(getResources(), avatarIcons.getAvatarIcon(newIconId));
-                detailImage.setImageDrawable(drawable);
-                detailImage.setBackgroundColor(getResources().getColor(newBackgroundColor));
-            } else {
-                detailImage.setImageDrawable(null);
-                detailImage.setBackgroundColor(getResources().getColor(newBackgroundColor));
+                    String newUserName = data.getStringExtra("new_user_name");
+                    int newIconId = data.getIntExtra("new_icon_id", -1);
+                    userName = newUserName;
+                    iconId = newIconId;
+
+                    // UPDATE VIEWS
+                    collapsingToolbar.setTitle(newUserName);
+                    int newBackgroundColor = avatarIcons.getBackgroundColor(newIconId);
+                    if (newIconId < 16) {
+                        drawable = MrVector.inflate(getResources(), avatarIcons.getAvatarIcon(newIconId));
+                        detailImage.setImageDrawable(drawable);
+                        detailImage.setBackgroundColor(getResources().getColor(newBackgroundColor));
+                    } else {
+                        detailImage.setImageDrawable(null);
+                        detailImage.setBackgroundColor(getResources().getColor(newBackgroundColor));
+                    }
+                    collapsingToolbar.setBackgroundColor(getResources().getColor(newBackgroundColor));
+                    collapsingToolbar.setContentScrimColor(getResources().getColor(newBackgroundColor));
+
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                        setStatusBarColor(avatarIcons.getBackgroundColorDark(newIconId));
+                    }
+
+                    if (!avatarIcons.isTextColorLight(newIconId)) {
+                        collapsingToolbar.setExpandedTitleColor(getResources().getColor(R.color.colorPrimaryText));
+                        collapsingToolbar.setCollapsedTitleTextColor(getResources().getColor(R.color.colorPrimaryText));
+
+                        // This is temporary FIX ASAP using themes
+                        final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+                        upArrow.setColorFilter(getResources().getColor(R.color.colorPrimaryText), PorterDuff.Mode.SRC_ATOP);
+                        getSupportActionBar().setHomeAsUpIndicator(upArrow);
+                    } else {
+                        collapsingToolbar.setExpandedTitleColor(Color.WHITE);
+                        collapsingToolbar.setCollapsedTitleTextColor(Color.WHITE);
+
+                        // This is temporary FIX ASAP using themes
+                        final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
+                        upArrow.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
+                        getSupportActionBar().setHomeAsUpIndicator(upArrow);
+                    }
+                    break;
+
+                case REQUEST_CODE_EDIT_TRANSACTION:
+
+                    String newTransTitle = data.getStringExtra("new_trans_title");
+                    Double newTransAmount = data.getDoubleExtra("new_trans_amount", 0);
+                    int newTransType = data.getIntExtra("new_trans_type", 0);
+                    String newTransDate = data.getStringExtra("new_trans_date");
+                    Double newUserBalance = data.getDoubleExtra("new_user_balance", 0);
+                    int transListPos = data.getIntExtra("trans_list_pos", -1);
+
+                    adapter.editTransaction(transListPos, newTransTitle, newTransAmount, newTransType, newTransDate, newUserBalance);
+                    HomeFragment.adapter.changeAccountAmount(listPosition, newUserBalance);
+                    break;
+
             }
-            collapsingToolbar.setBackgroundColor(getResources().getColor(newBackgroundColor));
-            collapsingToolbar.setContentScrimColor(getResources().getColor(newBackgroundColor));
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                setStatusBarColor(avatarIcons.getBackgroundColorDark(newIconId));
-            }
-
-            if (!avatarIcons.isTextColorLight(newIconId)) {
-                collapsingToolbar.setExpandedTitleColor(getResources().getColor(R.color.colorPrimaryText));
-                collapsingToolbar.setCollapsedTitleTextColor(getResources().getColor(R.color.colorPrimaryText));
-
-                // This is temporary FIX ASAP using themes
-                final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-                upArrow.setColorFilter(getResources().getColor(R.color.colorPrimaryText), PorterDuff.Mode.SRC_ATOP);
-                getSupportActionBar().setHomeAsUpIndicator(upArrow);
-            } else {
-                collapsingToolbar.setExpandedTitleColor(Color.WHITE);
-                collapsingToolbar.setCollapsedTitleTextColor(Color.WHITE);
-
-                // This is temporary FIX ASAP using themes
-                final Drawable upArrow = getResources().getDrawable(R.drawable.abc_ic_ab_back_mtrl_am_alpha);
-                upArrow.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_ATOP);
-                getSupportActionBar().setHomeAsUpIndicator(upArrow);
-            }
-
         }
     }
 
@@ -188,11 +214,63 @@ public class AccountDetailActivity extends AppCompatActivity {
     }
 
     private void initViews() {
+        // Transaction List
         adapter = new TransactionListAdapter(this, getData());
         mTransactionList = (RecyclerView) findViewById(R.id.transactionListRecycler);
         mTransactionList.setAdapter(adapter);
         mTransactionList.setLayoutManager(new LinearLayoutManager(this));
+        mTransactionList.addOnItemTouchListener(new RecyclerTouchListener(this, mTransactionList, new ClickListener() {
+            @Override
+            public void onClick(View view, int position) {
 
+            }
+
+            @Override
+            public void onLongClick(View view, final int position) {
+
+                TextView transIdTextView = (TextView) view.findViewById(R.id.transId);
+                final long transId = Long.parseLong(transIdTextView.getText().toString());
+                final int userId = Integer.parseInt(userID);
+//                Message.message(AccountDetailActivity.this, String.valueOf(userId));
+
+                new MaterialDialog.Builder(AccountDetailActivity.this)
+                        .title(R.string.transaction_edit_dialog_title)
+                        .items(R.array.transaction_edit_dialog_list)
+                        .itemsCallback(new MaterialDialog.ListCallback() {
+                            @Override
+                            public void onSelection(MaterialDialog materialDialog, View view, int which, CharSequence charSequence) {
+                               switch(which) {
+                                   case 0:
+                                       // Edit
+                                       Intent intent = new Intent(AccountDetailActivity.this, AddTransactionActivity.class);
+                                       intent.putExtra("TRANS_USER_ID", userID);
+                                       intent.putExtra("USER_LIST_POSITION", listPosition);
+                                       intent.putExtra("Trans_id", transId);
+                                       intent.putExtra("is_edit_trans", true);
+                                       intent.putExtra("trans_list_pos", position);
+                                       startActivityForResult(intent, REQUEST_CODE_EDIT_TRANSACTION);
+                                       break;
+                                   case 1:
+                                       // Delete
+                                       AccountDBAdapter helper = new AccountDBAdapter(AccountDetailActivity.this);
+                                       Double newBalance = helper.deleteTransaction(transId, userId);
+
+                                       // Update Balance
+                                       adapter.changeBalance(newBalance);
+                                       HomeFragment.adapter.changeAccountAmount(listPosition, newBalance);
+
+                                       // Remove item
+                                       adapter.remove(position);
+                                       break;
+                               }
+                            }
+                        })
+                        .show();
+            }
+        }));
+
+
+        // FAB
         fabAddTransaction = (FloatingActionButton) findViewById(R.id.fabAddTransaction);
         fabAddTransaction.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -214,7 +292,7 @@ public class AccountDetailActivity extends AppCompatActivity {
                 intent.putExtra("LIST_POSITION", listPosition);
                 intent.putExtra("User_name", userName);
                 intent.putExtra("is_from_detail_activity", true);
-                startActivityForResult(intent, 1);
+                startActivityForResult(intent, REQUEST_CODE_EDIT_ACCOUNT);
             }
         });
     }

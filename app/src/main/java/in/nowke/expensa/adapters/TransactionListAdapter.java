@@ -126,6 +126,22 @@ public class TransactionListAdapter extends RecyclerView.Adapter<TransactionList
         notifyItemChanged(0);
     }
 
+    public void changeBalance(Double amount) {
+        TransactionDetail headerData = data.get(0);
+        headerData.userBalance = amount;
+        notifyItemChanged(0);
+    }
+
+    public void editTransaction(int position, String newTitle, Double newAmount, int newType, String newDate, Double newTotalBalance) {
+        TransactionDetail currentData = data.get(position);
+        currentData.transDesc = newTitle;
+        currentData.transAmount = newAmount;
+        currentData.transType = newType;
+        currentData.transDate = newDate;
+        changeBalance(newTotalBalance);
+        notifyItemChanged(position);
+    }
+
     class MainViewHolder extends RecyclerView.ViewHolder {
 
         public MainViewHolder(View itemView) {

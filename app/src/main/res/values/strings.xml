@@ -45,11 +45,14 @@
     <string name="title_activity_edit_account">Edit Account</string>
     <string name="title_activity_account_detail">Account Detail</string>
     <string name="title_activity_add_transaction">Add Transaction</string>
+    <string name="title_activity_edit_transaction">Edit Transaction</string>
 
     <!-- Misc -->
     <string name="account_title">Account Title</string>
     <string name="trans_title">Title</string>
     <string name="trans_amount">Amount</string>
     <string name="spinner_title">Choose Date</string>
+    <string name="transaction_edit_dialog_title">Transaction</string>
+
     <integer name="activity_anim_duration">250</integer>
 </resources>

@@ -109,6 +109,12 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
         notifyItemChanged(position);
     }
 
+    public void changeAccountAmount(int position, Double amount) {
+        AccountDetail currentAccount = data.get(position);
+        currentAccount.user_balance = amount;
+        notifyItemChanged(position);
+    }
+
     public void updateAccountNameAndIcon(int position, String accountName, int iconId) {
         AccountDetail currentAccount = data.get(position);
         currentAccount.user_name = accountName;

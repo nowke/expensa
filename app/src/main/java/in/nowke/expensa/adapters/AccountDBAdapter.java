@@ -61,6 +61,19 @@ public class AccountDBAdapter {
         return id;
     }
 
+    public Double deleteTransaction(long transId, int userId) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        int count = db.delete(AccountDBHelper.TABLE_TRANS, AccountDBHelper.TRANS_ID + "=" + transId, null);
+
+        Double newBalance = calcBalance(userId);
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(AccountDBHelper.USER_BALANCE, newBalance);
+        db.update(AccountDBHelper.TABLE_ACCOUNT, contentValues, AccountDBHelper.USER_ID + "=" + userId, null);
+
+        return newBalance;
+    }
+
     public String getAllData() {
         SQLiteDatabase db = helper.getReadableDatabase();
 
@@ -103,7 +116,7 @@ public class AccountDBAdapter {
             int tType = cursor.getInt(index4);
             String transDesc = cursor.getString(index5);
 
-            buffer.append(tid + "," + uid + ":" + tAmt + ", " + tType + "= " + transDesc + "\n" );
+            buffer.append(tid + "," + uid + ":" + tAmt + ", " + tType + "= " + transDesc + "\n");
         }
         cursor.close();
         return buffer.toString();
@@ -203,6 +216,36 @@ public class AccountDBAdapter {
         }
         cursor.close();
         return transInfo;
+    }
+
+    public TransactionDetail getTransactionById(long transId) {
+        SQLiteDatabase db = helper.getReadableDatabase();
+
+        String columns[] = {AccountDBHelper.TRANS_DESC, AccountDBHelper.TRANS_AMOUNT, AccountDBHelper.TRANS_TYPE, AccountDBHelper.TRANS_DATE, AccountDBHelper.TRANS_ID};
+        Cursor cursor = db.query(AccountDBHelper.TABLE_TRANS, columns, AccountDBHelper.TRANS_ID + "=" + transId, null, null, null, null);
+        TransactionDetail transDetail = new TransactionDetail();
+
+        while (cursor.moveToNext()) {
+            int index1 = cursor.getColumnIndex(AccountDBHelper.TRANS_DESC);
+            int index2 = cursor.getColumnIndex(AccountDBHelper.TRANS_AMOUNT);
+            int index3 = cursor.getColumnIndex(AccountDBHelper.TRANS_TYPE);
+            int index4 = cursor.getColumnIndex(AccountDBHelper.TRANS_DATE);
+            int index5 = cursor.getColumnIndex(AccountDBHelper.TRANS_ID);
+
+            String tDesc = cursor.getString(index1);
+            Double tAmount = cursor.getDouble(index2);
+            int tType = cursor.getInt(index3);
+            String tDate = cursor.getString(index4);
+            int tId = cursor.getInt(index5);
+
+            transDetail.transType = tType;
+            transDetail.transDesc = tDesc;
+            transDetail.transAmount = tAmount;
+            transDetail.transDate = tDate;
+            transDetail.transId = tId;
+        }
+        cursor.close();
+        return transDetail;
     }
 
     public Double calcBalance(int userId) {
@@ -342,6 +385,26 @@ public class AccountDBAdapter {
         contentValues.put(AccountDBHelper.USER_ICON_ID, newUserIconId);
         String[] whereArgs = {String.valueOf(userId)};
         db.update(AccountDBHelper.TABLE_ACCOUNT, contentValues, AccountDBHelper.USER_ID + " =? ", whereArgs);
+    }
+
+    public Double editTransaction(long transId, int userId, String newTransTitle, Double newTransAmount, int newTransType, String newTransDate) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(AccountDBHelper.TRANS_DESC, newTransTitle);
+        contentValues.put(AccountDBHelper.TRANS_AMOUNT, newTransAmount);
+        contentValues.put(AccountDBHelper.TRANS_TYPE, newTransType);
+        contentValues.put(AccountDBHelper.TRANS_DATE, newTransDate);
+        String[] whereArgs = {String.valueOf(transId)};
+
+        db.update(AccountDBHelper.TABLE_TRANS, contentValues, AccountDBHelper.TRANS_ID + " =? ", whereArgs);
+
+        Double newBalance = calcBalance(userId);
+
+        ContentValues contentValues1 = new ContentValues();
+        contentValues1.put(AccountDBHelper.USER_BALANCE, newBalance);
+        db.update(AccountDBHelper.TABLE_ACCOUNT, contentValues1, AccountDBHelper.USER_ID + "=" + userId, null);
+
+        return newBalance;
     }
 
     static class AccountDBHelper extends SQLiteOpenHelper {
