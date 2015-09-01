@@ -18,7 +18,7 @@
         <item name="colorControlHighlight">@color/colorHighlight</item>
 
         <item name="windowActionModeOverlay">true</item>
-        <item name="actionModeBackground">@color/colorDivider</item>
+        <item name="actionModeBackground">@color/colorDeleted</item>
         <!--<item name="android:actionModeCloseButtonStyle">@color/colorPrimaryDark</item>-->
         <item name="actionBarPopupTheme">@style/Theme.AppCompat.Light</item>
     </style>

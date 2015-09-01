@@ -43,12 +43,17 @@ public class AddTransactionActivity extends AppCompatActivity implements DatePic
     TextView dateTextView;
     Toolbar mToolbar;
 
+    TextView dateTextDate;
+    TextView dateTextMonth;
+    TextView dateTextYear;
+
     TextInputLayout transTitle;
     TextInputLayout transAmount;
     Button saveTrans;
     RadioGroup transType;
 
     MyDateFormat date;
+    MyDateFormat transactionDate;
 
     String userId;
     long transId;
@@ -79,6 +84,9 @@ public class AddTransactionActivity extends AppCompatActivity implements DatePic
         transAmount = (TextInputLayout) findViewById(R.id.textinputTransAmount);
         transType = (RadioGroup) findViewById(R.id.radioTransType);
         saveTrans = (Button) findViewById(R.id.saveTransaction);
+        dateTextDate = (TextView) findViewById(R.id.dateTextDate);
+        dateTextMonth = (TextView) findViewById(R.id.dateTextMonth);
+        dateTextYear = (TextView) findViewById(R.id.dateTextYear);
 
         // ACTION BAR
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -150,6 +158,13 @@ public class AddTransactionActivity extends AppCompatActivity implements DatePic
         // DATE
         date = new MyDateFormat(Utilities.getCurrentDay(), Utilities.getCurrentMonth(), Utilities.getCurrentYear());
         dateTextView.setText(isEdit ? transactionDetail.transDate : date.getDateStr());
+        if (isEdit) {
+            transactionDate = MyDateFormat.getDateFromStr(transactionDetail.transDate);
+        }
+        dateTextDate.setText(isEdit ? String.format("%02d", transactionDate.getDay()) : String.format("%02d", date.getDay()));
+        dateTextMonth.setText(isEdit ? transactionDate.getMonth() : date.getMonth());
+        dateTextYear.setText(isEdit ? String.valueOf(transactionDate.getYear()) : String.valueOf(date.getYear()));
+//        Message.message(this, String.valueOf(date.getYear()));
     }
 
     private void watchForButtonEnableDisable() {
@@ -245,6 +260,9 @@ public class AddTransactionActivity extends AppCompatActivity implements DatePic
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
         date = new MyDateFormat(dayOfMonth, monthOfYear + 1, year);
         dateTextView.setText(date.getDateStr());
+        dateTextDate.setText(String.format("%02d", date.getDay()));
+        dateTextMonth.setText(date.getMonth());
+        dateTextYear.setText(String.valueOf(date.getYear()));
     }
 
     /**
