@@ -14,6 +14,7 @@ import java.util.List;
 import in.nowke.expensa.R;
 import in.nowke.expensa.classes.Message;
 import in.nowke.expensa.classes.Utilities;
+import in.nowke.expensa.entity.MyDateFormat;
 import in.nowke.expensa.entity.TransactionDetail;
 
 /**
@@ -72,7 +73,7 @@ public class TransactionListAdapter extends RecyclerView.Adapter<TransactionList
 
                 itemNormalHolder.transTitle.setText(current.transDesc);
                 itemNormalHolder.transId.setText(String.valueOf(current.transId));
-                itemNormalHolder.transDate.setText(current.transDate);
+                itemNormalHolder.transDate.setText(MyDateFormat.getReadableDateStr(current.transDate));
 
                 if (current.transType == 0) {
                     itemNormalHolder.transAmount.setTextColor(context.getResources().getColor(R.color.colorMaterialTeal));

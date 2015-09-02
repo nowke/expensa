@@ -180,7 +180,7 @@ public class AccountDBAdapter {
         SQLiteDatabase db = helper.getReadableDatabase();
 
         String columns[] = {AccountDBHelper.TRANS_DESC, AccountDBHelper.TRANS_AMOUNT, AccountDBHelper.TRANS_TYPE, AccountDBHelper.TRANS_DATE, AccountDBHelper.TRANS_ID};
-        Cursor cursor = db.query(AccountDBHelper.TABLE_TRANS, columns, AccountDBHelper.USER_ID + "=" + userId, null, null, null, null);
+        Cursor cursor = db.query(AccountDBHelper.TABLE_TRANS, columns, AccountDBHelper.USER_ID + "=" + userId, null, null, null, AccountDBHelper.TRANS_DATE + " DESC");
 
         List<TransactionDetail> transInfo = new ArrayList<>();
 
@@ -423,7 +423,7 @@ public class AccountDBAdapter {
 
         // DATABASES
         private static final String DATABASE_NAME = "AccountDb";
-        private static final int DATABASE_VERSION = 6;
+        private static final int DATABASE_VERSION = 1;
 
         // TABLES
         private static final String TABLE_ACCOUNT = "tableAccount";
@@ -458,7 +458,7 @@ public class AccountDBAdapter {
                                                          TRANS_AMOUNT + " DOUBLE, " +
                                                          TRANS_DESC + " VARCHAR(255), " +
                                                          TRANS_TYPE + " INTEGER, " +
-                                                         TRANS_DATE + " VARCHAR(30), " +
+                                                         TRANS_DATE + " DATE, " +
                                                          "FOREIGN KEY (" + USER_ID + ") REFERENCES " + TABLE_ACCOUNT + " (" + USER_ID + "));";
 
         // DROP TABLE

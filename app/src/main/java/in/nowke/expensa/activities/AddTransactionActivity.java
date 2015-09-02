@@ -164,7 +164,6 @@ public class AddTransactionActivity extends AppCompatActivity implements DatePic
         dateTextDate.setText(isEdit ? String.format("%02d", transactionDate.getDay()) : String.format("%02d", date.getDay()));
         dateTextMonth.setText(isEdit ? transactionDate.getMonth() : date.getMonth());
         dateTextYear.setText(isEdit ? String.valueOf(transactionDate.getYear()) : String.valueOf(date.getYear()));
-//        Message.message(this, String.valueOf(date.getYear()));
     }
 
     private void watchForButtonEnableDisable() {
@@ -247,12 +246,23 @@ public class AddTransactionActivity extends AppCompatActivity implements DatePic
 
     public void pickDate(View view) {
         Calendar now = Calendar.getInstance();
-        DatePickerDialog dpd = DatePickerDialog.newInstance(
-                this,
-                now.get(Calendar.YEAR),
-                now.get(Calendar.MONTH),
-                now.get(Calendar.DAY_OF_MONTH)
-        );
+        DatePickerDialog dpd;
+        if (isEdit) {
+            dpd = DatePickerDialog.newInstance(
+                    this,
+                    transactionDate.getYear(),
+                    transactionDate.getMonthInt(),
+                    transactionDate.getDay()
+            );
+        }
+        else {
+            dpd = DatePickerDialog.newInstance(
+                    this,
+                    now.get(Calendar.YEAR),
+                    now.get(Calendar.MONTH),
+                    now.get(Calendar.DAY_OF_MONTH)
+            );
+        }
         dpd.show(getFragmentManager(), "DatePicker Dialog");
     }
 

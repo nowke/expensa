@@ -1,6 +1,7 @@
 package in.nowke.expensa;
 
 import android.annotation.TargetApi;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     private ConnectionResult mConnectionResult;
     private GoogleApiClient mGoogleApiClient;
     private Bitmap mUserPic;
+    private ProgressDialog mConnectionProgressDialog;
 
     Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
@@ -74,7 +76,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        mConnectionProgressDialog = new ProgressDialog(this);
+        mConnectionProgressDialog.setMessage("Signing in...");
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this).addApi(Plus.API, Plus.PlusOptions.builder().build())
@@ -384,6 +387,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             firstTimeFinished();
         }
         getProfileInformation();
+        if (mConnectionProgressDialog.isShowing() ) {
+            mConnectionProgressDialog.dismiss();
+        }
     }
 
     @Override
@@ -419,7 +425,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             if (responseCode != RESULT_OK) {
                 mSignInClicked = false;
             }
-
+            else {
+                mConnectionProgressDialog.show();
+            }
             mIntentInProgress = false;
 
             if (!mGoogleApiClient.isConnecting()) {
@@ -430,8 +438,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     public void signInGplus(View view) {
         if (!mGoogleApiClient.isConnecting()) {
+
             mSignInClicked = true;
-            resolveSignInError();
+//            if (mConnectionResult == null) {
+
+//            }
+//            else {
+                resolveSignInError();
+//            }
         }
     }
 
@@ -439,7 +453,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (mConnectionResult.hasResolution()) {
             try {
                 mIntentInProgress = true;
+
                 mConnectionResult.startResolutionForResult(this, RC_SIGN_IN);
+
             } catch (IntentSender.SendIntentException e) {
                 mIntentInProgress = false;
                 mGoogleApiClient.connect();
