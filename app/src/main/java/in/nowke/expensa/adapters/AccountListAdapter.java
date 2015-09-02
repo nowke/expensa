@@ -23,6 +23,7 @@ import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.nowke.expensa.MainActivity;
 import in.nowke.expensa.R;
+import in.nowke.expensa.classes.Message;
 import in.nowke.expensa.entity.AccountDetail;
 import in.nowke.expensa.classes.AvatarIcons;
 import in.nowke.expensa.classes.Utilities;
@@ -142,7 +143,6 @@ public class AccountListAdapter extends RecyclerView.Adapter<AccountListAdapter.
             userAccountType = (TextView) itemView.findViewById(R.id.userAccountType);
 
             itemView.setClickable(true);
-
         }
     }
 

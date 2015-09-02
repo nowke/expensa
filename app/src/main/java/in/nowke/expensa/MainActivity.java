@@ -2,6 +2,7 @@ package in.nowke.expensa;
 
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
@@ -36,15 +37,34 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.drive.Drive;
+import com.google.android.gms.drive.DriveApi;
+import com.google.android.gms.drive.DriveContents;
+import com.google.android.gms.drive.DriveFile;
+import com.google.android.gms.drive.DriveFolder;
+import com.google.android.gms.drive.DriveId;
+import com.google.android.gms.drive.MetadataBuffer;
+import com.google.android.gms.drive.MetadataChangeSet;
+import com.google.android.gms.drive.query.Filters;
+import com.google.android.gms.drive.query.Query;
+import com.google.android.gms.drive.query.SearchableField;
 import com.google.android.gms.plus.Plus;
 import com.google.android.gms.plus.model.people.Person;
 import com.telly.mrvector.MrVector;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.nowke.expensa.activities.AddAccountActivity;
 import in.nowke.expensa.adapters.AccountDBAdapter;
+import in.nowke.expensa.classes.ApiClientAsyncTask;
 import in.nowke.expensa.classes.Message;
 import in.nowke.expensa.fragments.HomeFragment;
 
@@ -80,7 +100,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         mConnectionProgressDialog.setMessage("Signing in...");
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this).addApi(Plus.API, Plus.PlusOptions.builder().build())
+                .addOnConnectionFailedListener(this)
+                .addApi(Plus.API, Plus.PlusOptions.builder().build())
+                .addApi(Drive.API)
+                .addScope(Drive.SCOPE_FILE)
+                .addScope(Drive.SCOPE_APPFOLDER)
                 .addScope(Plus.SCOPE_PLUS_LOGIN).build();
 
 
@@ -390,6 +414,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (mConnectionProgressDialog.isShowing() ) {
             mConnectionProgressDialog.dismiss();
         }
+//        Drive.DriveApi.newDriveContents(mGoogleApiClient).setResultCallback(driveContentsCallback);
     }
 
     @Override
@@ -438,14 +463,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
 
     public void signInGplus(View view) {
         if (!mGoogleApiClient.isConnecting()) {
-
             mSignInClicked = true;
-//            if (mConnectionResult == null) {
-
-//            }
-//            else {
-                resolveSignInError();
-//            }
+            resolveSignInError();
         }
     }
 
@@ -453,7 +472,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (mConnectionResult.hasResolution()) {
             try {
                 mIntentInProgress = true;
-
                 mConnectionResult.startResolutionForResult(this, RC_SIGN_IN);
 
             } catch (IntentSender.SendIntentException e) {
@@ -525,4 +543,132 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
             }
         }
     }
+
+    /**
+     * SYNC
+     */
+//    final private ResultCallback<DriveApi.DriveContentsResult> driveContentsCallback =
+//            new ResultCallback<DriveApi.DriveContentsResult>() {
+//                @Override
+//                public void onResult(DriveApi.DriveContentsResult result) {
+//                    if (!result.getStatus().isSuccess()) {
+//                        Message.message(MainActivity.this, "Error while trying to create new file contents");
+//                        return;
+//                    }
+//
+//                    final DriveContents driveContents = result.getDriveContents();
+//                    new Thread() {
+//                        @Override
+//                        public void run() {
+//                            OutputStream outputStream = driveContents.getOutputStream();
+//                            Writer writer = new OutputStreamWriter(outputStream);
+//                            try {
+//                                writer.write("Hello World!");
+//                                writer.close();
+//                            } catch (IOException e) {
+//                                Log.e("Drive", e.getMessage());
+//                            }
+//
+//
+//                            MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
+//                                    .setTitle("New file")
+//                                    .setMimeType("text/plain")
+//                                    .build();
+//
+//                            Drive.DriveApi.getAppFolder(mGoogleApiClient)
+//                                    .createFile(mGoogleApiClient, changeSet, driveContents)
+//                                    .setResultCallback(fileCallback);
+//
+//                            Drive.DriveApi.getAppFolder(mGoogleApiClient).
+//                        }
+//                    }.start();
+//                    new Thread() {
+//                        @Override
+//                        public void run() {
+//                            Query query = new Query.Builder()
+//                                    .addFilter(Filters.eq(SearchableField.TITLE, "New file"))
+//                                    .build();
+//                            Drive.DriveApi.getAppFolder(mGoogleApiClient)
+//                                    .queryChildren(mGoogleApiClient, query)
+//                                    .setResultCallback(metadataCallback);
+//                        }
+//                    }.start();
+//
+//                }
+//            };
+
+//    final private ResultCallback<DriveApi.MetadataBufferResult> metadataCallback =
+//            new ResultCallback<DriveApi.MetadataBufferResult>() {
+//                @Override
+//                public void onResult(DriveApi.MetadataBufferResult result) {
+//                    if (!result.getStatus().isSuccess()) {
+//                        Message.message(MainActivity.this, "Problem while retrieving results");
+//                        return;
+//                    }
+//                    MetadataBuffer metadata = result.getMetadataBuffer();
+//                    if (metadata.getCount() > 0) {
+//                        DriveId driveID = metadata.get(0).getDriveId();
+//                        new RetrieveDriveFileContentsAsyncTask(MainActivity.this).execute(driveID);
+//                    }
+//                }
+//            };
+
+//    final private ResultCallback<DriveFolder.DriveFileResult> fileCallback = new
+//            ResultCallback<DriveFolder.DriveFileResult>() {
+//                @Override
+//                public void onResult(DriveFolder.DriveFileResult result) {
+//                    if (!result.getStatus().isSuccess()) {
+//                        Message.message(MainActivity.this, "Error while trying to create the file");
+//                        return;
+//                    }
+//                    Message.message(MainActivity.this, "Created a file in App Folder: "
+//                            + result.getDriveFile().getDriveId());
+//
+//                }
+//            };
+//
+//    final private class RetrieveDriveFileContentsAsyncTask
+//            extends ApiClientAsyncTask<DriveId, Boolean, String> {
+//
+//        public RetrieveDriveFileContentsAsyncTask(Context context) {
+//            super(context);
+//        }
+//
+//        @Override
+//        protected String doInBackgroundConnected(DriveId... params) {
+//            String contents = null;
+//            DriveFile file = Drive.DriveApi.getFile(mGoogleApiClient, params[0]);
+//            DriveApi.DriveContentsResult driveContentsResult =
+//                    file.open(mGoogleApiClient, DriveFile.MODE_READ_ONLY, null).await();
+//            if (!driveContentsResult.getStatus().isSuccess()) {
+//                return null;
+//            }
+//            DriveContents driveContents = driveContentsResult.getDriveContents();
+//            BufferedReader reader = new BufferedReader(
+//                    new InputStreamReader(driveContents.getInputStream()));
+//            StringBuilder builder = new StringBuilder();
+//            String line;
+//            try {
+//                while ((line = reader.readLine()) != null) {
+//                    builder.append(line);
+//                }
+//                contents = builder.toString();
+//            } catch (IOException e) {
+//                Log.e("Drive", "IOException while reading from the stream", e);
+//            }
+//
+//            driveContents.discard(mGoogleApiClient);
+//            return contents;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(String result) {
+//            super.onPostExecute(result);
+//            if (result == null) {
+//                Message.message(MainActivity.this, "Error while reading from the file");
+//                return;
+//            }
+//            Message.message(MainActivity.this, "File contents: " + result);
+//        }
+//    }
 }

@@ -34,6 +34,7 @@ import in.nowke.expensa.activities.AddAccountActivity;
 import in.nowke.expensa.adapters.AccountDBAdapter;
 import in.nowke.expensa.adapters.AccountListAdapter;
 import in.nowke.expensa.adapters.AccountListSectionedAdapter;
+import in.nowke.expensa.classes.Message;
 import in.nowke.expensa.classes.Utilities;
 import in.nowke.expensa.entity.AccountDetail;
 import in.nowke.expensa.classes.ActionCallback;
@@ -86,6 +87,7 @@ public class HomeFragment extends Fragment {
                     // Finished Action Mode
                     return;
                 }
+
                 if (!view.isClickable()) { return; }
                 TextView userIdText = (TextView) view.findViewById(R.id.userId);
                 Intent intent = new Intent(getActivity(), AccountDetailActivity.class);
