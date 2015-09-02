@@ -102,9 +102,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Plus.API, Plus.PlusOptions.builder().build())
-                .addApi(Drive.API)
-                .addScope(Drive.SCOPE_FILE)
-                .addScope(Drive.SCOPE_APPFOLDER)
+//                .addApi(Drive.API)
+//                .addScope(Drive.SCOPE_FILE)
+//                .addScope(Drive.SCOPE_APPFOLDER)
                 .addScope(Plus.SCOPE_PLUS_LOGIN).build();
 
 
@@ -427,6 +427,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         if (!connectionResult.hasResolution()) {
             GooglePlayServicesUtil.getErrorDialog(connectionResult.getErrorCode(), this,
                     0).show();
+            if (mConnectionProgressDialog.isShowing()) {
+                mConnectionProgressDialog.dismiss();
+            }
             return;
         }
 
