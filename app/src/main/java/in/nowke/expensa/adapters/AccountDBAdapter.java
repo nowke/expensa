@@ -176,7 +176,7 @@ public class AccountDBAdapter {
         return accInfo;
     }
 
-    public List<TransactionDetail> getTransInfo(int userId) {
+    public List<TransactionDetail> getTransInfo(long userId, boolean headerRequired) {
         SQLiteDatabase db = helper.getReadableDatabase();
 
         String columns[] = {AccountDBHelper.TRANS_DESC, AccountDBHelper.TRANS_AMOUNT, AccountDBHelper.TRANS_TYPE, AccountDBHelper.TRANS_DATE, AccountDBHelper.TRANS_ID};
@@ -184,13 +184,16 @@ public class AccountDBAdapter {
 
         List<TransactionDetail> transInfo = new ArrayList<>();
 
-        Double userBalance = getBalanceById(userId);
-        String userCreated = getCreatedDateById(userId);
-        TransactionDetail userHeader = new TransactionDetail();
-        userHeader.userBalance = userBalance;
-        userHeader.userCreated = userCreated;
+        if (headerRequired) {
 
-        transInfo.add(userHeader);
+            Double userBalance = getBalanceById(userId);
+            String userCreated = getCreatedDateById(userId);
+            TransactionDetail userHeader = new TransactionDetail();
+            userHeader.userBalance = userBalance;
+            userHeader.userCreated = userCreated;
+
+            transInfo.add(userHeader);
+        }
 
         while (cursor.moveToNext()) {
             int index1 = cursor.getColumnIndex(AccountDBHelper.TRANS_DESC);
@@ -246,6 +249,52 @@ public class AccountDBAdapter {
         }
         cursor.close();
         return transDetail;
+    }
+
+    public AccountDetail getAccountById(long accountId) {
+        SQLiteDatabase db = helper.getReadableDatabase();
+
+        String columns[] = {AccountDBHelper.USER_NAME, AccountDBHelper.USER_BALANCE, AccountDBHelper.USER_ICON_ID, AccountDBHelper.USER_CREATED, AccountDBHelper
+        .USER_ACCOUNT_TYPE};
+        Cursor cursor = db.query(AccountDBHelper.TABLE_ACCOUNT, columns, AccountDBHelper.USER_ID + "=" + accountId, null, null, null, null);
+        AccountDetail accountDetail = new AccountDetail();
+
+        while (cursor.moveToNext()) {
+            int index1 = cursor.getColumnIndex(AccountDBHelper.USER_NAME);
+            int index2 = cursor.getColumnIndex(AccountDBHelper.USER_BALANCE);
+            int index3 = cursor.getColumnIndex(AccountDBHelper.USER_ICON_ID);
+            int index4 = cursor.getColumnIndex(AccountDBHelper.USER_CREATED);
+            int index5 = cursor.getColumnIndex(AccountDBHelper.USER_ACCOUNT_TYPE);
+
+            String userName = cursor.getString(index1);
+            Double userBalance = cursor.getDouble(index2);
+            int userIconId = cursor.getInt(index3);
+            String userCreated = cursor.getString(index4);
+            int userAccountType = cursor.getInt(index5);
+
+            accountDetail.user_name = userName;
+            accountDetail.user_account_type = userAccountType;
+            accountDetail.user_balance = userBalance;
+            accountDetail.user_icon_id = userIconId;
+            accountDetail.user_created = userCreated;
+        }
+        cursor.close();
+        return accountDetail;
+    }
+
+    public List<Integer> getAllAccountIds() {
+        SQLiteDatabase db = helper.getReadableDatabase();
+        String columns[] = {AccountDBHelper.USER_ID};
+        Cursor cursor = db.query(AccountDBHelper.TABLE_ACCOUNT, columns, null, null, null, null, null);
+        List<Integer> accountIds = new ArrayList<>();
+
+        while (cursor.moveToNext()) {
+            int index = cursor.getColumnIndex(AccountDBHelper.USER_ID);
+            long userId = cursor.getLong(index);
+            accountIds.add((int) userId);
+        }
+        cursor.close();
+        return accountIds;
     }
 
     public Double calcBalance(int userId) {
@@ -318,7 +367,7 @@ public class AccountDBAdapter {
         return iconId;
     }
 
-    public String getCreatedDateById(int userId) {
+    public String getCreatedDateById(long userId) {
         SQLiteDatabase db = helper.getReadableDatabase();
 
         String columns[] = {AccountDBHelper.USER_ID, AccountDBHelper.USER_CREATED};
@@ -333,7 +382,7 @@ public class AccountDBAdapter {
         return uCreated;
     }
 
-    public Double getBalanceById(int userId) {
+    public Double getBalanceById(long userId) {
         SQLiteDatabase db = helper.getReadableDatabase();
 
         String columns[] = {AccountDBHelper.USER_ID, AccountDBHelper.USER_BALANCE};

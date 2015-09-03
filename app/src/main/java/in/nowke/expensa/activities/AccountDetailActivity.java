@@ -210,7 +210,7 @@ public class AccountDetailActivity extends AppCompatActivity {
 
     public List<TransactionDetail> getData() {
         AccountDBAdapter helper = new AccountDBAdapter(this);
-        return helper.getTransInfo(Integer.parseInt(userID));
+        return helper.getTransInfo(Integer.parseInt(userID), true);
     }
 
     private void initViews() {

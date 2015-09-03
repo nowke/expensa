@@ -63,6 +63,7 @@ import java.io.Writer;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.nowke.expensa.activities.AddAccountActivity;
+import in.nowke.expensa.activities.TestActivity;
 import in.nowke.expensa.adapters.AccountDBAdapter;
 import in.nowke.expensa.classes.ApiClientAsyncTask;
 import in.nowke.expensa.classes.Message;
@@ -348,6 +349,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                                                 homeFragment.setAccountListAdapter(5);
                                                 fabHideShow(0);
                                                 getSupportActionBar().setTitle(getResources().getString(R.string.nav_debit));
+                                                break;
+
+                                            case R.id.nav_settings:
+                                                Intent intent = new Intent(MainActivity.this, TestActivity.class);
+                                                startActivity(intent);
                                                 break;
                                         }
 
