@@ -1,4 +1,4 @@
-package in.nowke.expensa.classes;
+package in.nowke.expensa.sync;
 
 import android.content.Context;
 

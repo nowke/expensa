@@ -1,10 +1,8 @@
 package in.nowke.expensa.activities;
 
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.Log;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -13,7 +11,8 @@ import java.util.List;
 
 import in.nowke.expensa.R;
 import in.nowke.expensa.adapters.AccountDBAdapter;
-import in.nowke.expensa.classes.AccountToJson;
+import in.nowke.expensa.sync.AccountToJson;
+import in.nowke.expensa.sync.JsonToAccount;
 
 
 public class TestActivity extends AppCompatActivity {
@@ -30,18 +29,19 @@ public class TestActivity extends AppCompatActivity {
         List<Integer> accountIds = helper.getAllAccountIds();
         String fullJson = "";
         try {
-//            AccountToJson accountToJson = new AccountToJson(this, 2);
-//            testTextView.setText(accountToJson.getJsonString());
 
             for (int accountId: accountIds) {
                 AccountToJson accountToJson = new AccountToJson(this, accountId);
                 fullJson += "\n" + accountToJson.getJsonString();
+                Log.e("TestTag", accountToJson.getJsonString());
+                break;
             }
             testTextView.setText(fullJson);
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
     }
 
 }
