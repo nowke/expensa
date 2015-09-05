@@ -33,6 +33,7 @@ public class JsonToAccount {
     private static final String USER_BALANCE = "balance";
     private static final String USER_ACCOUNT_TYPE = "type";
     private static final String USER_TRANSACTIONS = "transactions";
+    private static final String USER_UUID = "uuid";
 
     private static final String TRANS_ID = "_tid";
     private static final String TRANS_DESC = "desc";
@@ -57,6 +58,7 @@ public class JsonToAccount {
         accountDetail.user_icon_id = accountObject.getInt(USER_ICON_ID);
         accountDetail.user_balance = accountObject.getDouble(USER_BALANCE);
         accountDetail.user_account_type = accountObject.getInt(USER_ACCOUNT_TYPE);
+        accountDetail.uuid = accountObject.getString(USER_UUID);
 
         JSONArray transactionJsonArray = accountObject.getJSONArray(USER_TRANSACTIONS);
 

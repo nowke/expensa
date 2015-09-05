@@ -36,6 +36,7 @@ public class AccountToJson {
     private static final String USER_BALANCE = "balance";
     private static final String USER_ACCOUNT_TYPE = "type";
     private static final String USER_TRANSACTIONS = "transactions";
+    private static final String USER_UUID = "uuid";
 
     private static final String TRANS_ID = "_tid";
     private static final String TRANS_DESC = "desc";
@@ -61,6 +62,7 @@ public class AccountToJson {
         accountObj.put(USER_NAME, accountDetail.user_name);
         accountObj.put(USER_CREATED, accountDetail.user_created);
         accountObj.put(USER_ACCOUNT_TYPE, accountDetail.user_account_type);
+        accountObj.put(USER_UUID, accountDetail.uuid);
 
         JSONArray transactionObjects = new JSONArray();
         for (TransactionDetail transactionDetail: transactionDetailList) {
@@ -81,5 +83,9 @@ public class AccountToJson {
         jsonString = accountObj.toString(4);
 
         return jsonString;
+    }
+
+    public String getAccountHash() {
+        return accountDetail.uuid;
     }
 }

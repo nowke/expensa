@@ -22,7 +22,10 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import java.util.UUID;
+
 import de.hdodenhof.circleimageview.CircleImageView;
+import in.nowke.expensa.BaseActivity;
 import in.nowke.expensa.R;
 import in.nowke.expensa.adapters.AccountDBAdapter;
 import in.nowke.expensa.adapters.AvatarAdapter;
@@ -30,7 +33,7 @@ import in.nowke.expensa.entity.AccountDetail;
 import in.nowke.expensa.classes.Utilities;
 import in.nowke.expensa.fragments.HomeFragment;
 
-public class AddAccountActivity extends AppCompatActivity {
+public class AddAccountActivity extends BaseActivity {
 
     Toolbar mToolbar;
     TextInputLayout mAddAccountName;
@@ -221,6 +224,7 @@ public class AddAccountActivity extends AppCompatActivity {
             accountDetail.user_balance = 0.0;
             accountDetail.user_created = timeStamp;
             accountDetail.user_account_type = 1;
+            accountDetail.uuid = UUID.randomUUID().toString();
 
             long id = helper.addAccount(accountDetail);
             accountDetail.user_id = id;

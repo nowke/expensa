@@ -32,6 +32,7 @@ public class AccountDBAdapter {
         contentValues.put(AccountDBHelper.USER_NAME, accountDetail.user_name);
         contentValues.put(AccountDBHelper.USER_ICON_ID, accountDetail.user_icon_id);
         contentValues.put(AccountDBHelper.USER_CREATED, accountDetail.user_created);
+        contentValues.put(AccountDBHelper.USER_UUID, accountDetail.uuid);
         contentValues.put(AccountDBHelper.USER_ACCOUNT_TYPE, AccountDBHelper.ACCOUNT_DEFAULT);
         contentValues.put(AccountDBHelper.USER_BALANCE, 0);
 
@@ -131,7 +132,8 @@ public class AccountDBAdapter {
                 AccountDBHelper.USER_BALANCE,
                 AccountDBHelper.USER_ICON_ID,
                 AccountDBHelper.USER_ACCOUNT_TYPE,
-                AccountDBHelper.USER_CREATED
+                AccountDBHelper.USER_CREATED,
+                AccountDBHelper.USER_UUID
         };
         if (accountType <= 3) {
             cursor = db.query(AccountDBHelper.TABLE_ACCOUNT, columns, AccountDBHelper.USER_ACCOUNT_TYPE + "=" + accountType, null, null, null,
@@ -153,6 +155,7 @@ public class AccountDBAdapter {
             int index4 = cursor.getColumnIndex(AccountDBHelper.USER_ICON_ID);
             int index5 = cursor.getColumnIndex(AccountDBHelper.USER_ACCOUNT_TYPE);
             int index6 = cursor.getColumnIndex(AccountDBHelper.USER_CREATED);
+            int index7 = cursor.getColumnIndex(AccountDBHelper.USER_UUID);
 
             int userId = cursor.getInt(index1);
             String userName = cursor.getString(index2);
@@ -160,6 +163,7 @@ public class AccountDBAdapter {
             int userIconId = cursor.getInt(index4);
             int userAccountType = cursor.getInt(index5);
             String userCreatedDate = cursor.getString(index6);
+            String uuid = cursor.getString(index7);
 
             AccountDetail accDetail = new AccountDetail();
             accDetail.user_id = userId;
@@ -168,6 +172,7 @@ public class AccountDBAdapter {
             accDetail.user_icon_id = userIconId;
             accDetail.user_created = userCreatedDate;
             accDetail.user_account_type = userAccountType;
+            accDetail.uuid = uuid;
 
             accInfo.add(accDetail);
         }
@@ -255,7 +260,7 @@ public class AccountDBAdapter {
         SQLiteDatabase db = helper.getReadableDatabase();
 
         String columns[] = {AccountDBHelper.USER_NAME, AccountDBHelper.USER_BALANCE, AccountDBHelper.USER_ICON_ID, AccountDBHelper.USER_CREATED, AccountDBHelper
-        .USER_ACCOUNT_TYPE};
+        .USER_ACCOUNT_TYPE, AccountDBHelper.USER_UUID};
         Cursor cursor = db.query(AccountDBHelper.TABLE_ACCOUNT, columns, AccountDBHelper.USER_ID + "=" + accountId, null, null, null, null);
         AccountDetail accountDetail = new AccountDetail();
 
@@ -265,18 +270,21 @@ public class AccountDBAdapter {
             int index3 = cursor.getColumnIndex(AccountDBHelper.USER_ICON_ID);
             int index4 = cursor.getColumnIndex(AccountDBHelper.USER_CREATED);
             int index5 = cursor.getColumnIndex(AccountDBHelper.USER_ACCOUNT_TYPE);
+            int index6 = cursor.getColumnIndex(AccountDBHelper.USER_UUID);
 
             String userName = cursor.getString(index1);
             Double userBalance = cursor.getDouble(index2);
             int userIconId = cursor.getInt(index3);
             String userCreated = cursor.getString(index4);
             int userAccountType = cursor.getInt(index5);
+            String uuid = cursor.getString(index6);
 
             accountDetail.user_name = userName;
             accountDetail.user_account_type = userAccountType;
             accountDetail.user_balance = userBalance;
             accountDetail.user_icon_id = userIconId;
             accountDetail.user_created = userCreated;
+            accountDetail.uuid = uuid;
         }
         cursor.close();
         return accountDetail;
@@ -485,6 +493,7 @@ public class AccountDBAdapter {
         private static final String USER_ICON_ID = "userIconId";
         private static final String USER_CREATED = "userCreated";
         private static final String USER_ACCOUNT_TYPE = "userAccountType";
+        private static final String USER_UUID = "userUUID";
 
         private static final String TRANS_ID = "_tid";
         private static final String TRANS_AMOUNT = "transAmount";
@@ -499,6 +508,7 @@ public class AccountDBAdapter {
                                                            USER_ICON_ID + " INTEGER, " +
                                                            USER_ACCOUNT_TYPE + " INTEGER, " +
                                                            USER_CREATED + " VARCHAR(30), "+
+                                                           USER_UUID + " VARCHAR(40), " +
                                                            USER_BALANCE + " DOUBLE);";
 
         private static final String CREATE_TRANS_TABLE = "CREATE TABLE " + TABLE_TRANS + " (" +

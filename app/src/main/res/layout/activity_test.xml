@@ -28,6 +28,12 @@
                 android:text="Upload"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
+
+            <Button
+                android:onClick="restoreDrive"
+                android:text="Restore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
         </LinearLayout>
 
 
