@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,16 +13,10 @@ import com.amulyakhare.textdrawable.TextDrawable;
 import com.telly.mrvector.MrVector;
 
 import java.util.Collections;
-import java.util.Currency;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
-import in.nowke.expensa.MainActivity;
 import in.nowke.expensa.R;
-import in.nowke.expensa.classes.Message;
 import in.nowke.expensa.entity.AccountDetail;
 import in.nowke.expensa.classes.AvatarIcons;
 import in.nowke.expensa.classes.Utilities;

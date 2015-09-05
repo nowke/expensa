@@ -22,29 +22,19 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
-import in.nowke.expensa.MainActivity;
 import in.nowke.expensa.R;
 import in.nowke.expensa.activities.AccountDetailActivity;
 import in.nowke.expensa.activities.AddAccountActivity;
 import in.nowke.expensa.adapters.AccountDBAdapter;
 import in.nowke.expensa.adapters.AccountListAdapter;
 import in.nowke.expensa.adapters.AccountListSectionedAdapter;
-import in.nowke.expensa.classes.Message;
 import in.nowke.expensa.classes.Utilities;
 import in.nowke.expensa.entity.AccountDetail;
 import in.nowke.expensa.classes.ActionCallback;
 import in.nowke.expensa.classes.ClickListener;
-import in.nowke.expensa.classes.DividerItemDecoration;
 import in.nowke.expensa.classes.RecyclerTouchListener;
-import jp.wasabeef.recyclerview.animators.LandingAnimator;
-import jp.wasabeef.recyclerview.animators.SlideInRightAnimator;
-import jp.wasabeef.recyclerview.animators.adapters.AlphaInAnimationAdapter;
-import jp.wasabeef.recyclerview.animators.adapters.SlideInBottomAnimationAdapter;
 
 /**
  * Created by nav on 26/6/15.

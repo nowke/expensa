@@ -231,7 +231,6 @@ public class AccountDetailActivity extends AppCompatActivity {
                 TextView transIdTextView = (TextView) view.findViewById(R.id.transId);
                 final long transId = Long.parseLong(transIdTextView.getText().toString());
                 final int userId = Integer.parseInt(userID);
-//                Message.message(AccountDetailActivity.this, String.valueOf(userId));
 
                 new MaterialDialog.Builder(AccountDetailActivity.this)
                         .title(R.string.transaction_edit_dialog_title)
