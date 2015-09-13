@@ -236,6 +236,8 @@ public class MainActivity extends BaseActivity {
         editor.putBoolean("RanBefore", true);
         editor.apply();
         showMainWindow();
+        super.getAllAccountHashes();
+
     }
 
     /**
@@ -382,6 +384,7 @@ public class MainActivity extends BaseActivity {
         if (!connectionResult.hasResolution()) {
             GooglePlayServicesUtil.getErrorDialog(connectionResult.getErrorCode(), this,
                     0).show();
+            Log.e("Error Gplay", String.valueOf(connectionResult.getErrorCode()));
             if (mConnectionProgressDialog.isShowing()) {
                 mConnectionProgressDialog.dismiss();
             }

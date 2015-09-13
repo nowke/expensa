@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -30,15 +31,17 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import in.nowke.expensa.BaseActivity;
 import in.nowke.expensa.R;
 import in.nowke.expensa.adapters.AccountDBAdapter;
 import in.nowke.expensa.classes.Message;
 import in.nowke.expensa.classes.Utilities;
+import in.nowke.expensa.entity.AccountDetail;
 import in.nowke.expensa.entity.TransactionDetail;
 import in.nowke.expensa.entity.MyDateFormat;
 import in.nowke.expensa.fragments.HomeFragment;
 
-public class AddTransactionActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
+public class AddTransactionActivity extends BaseActivity implements DatePickerDialog.OnDateSetListener {
 
     TextView dateTextView;
     Toolbar mToolbar;
@@ -223,7 +226,12 @@ public class AddTransactionActivity extends AppCompatActivity implements DatePic
             HomeFragment.adapter.updateAccountAmount(listPosition, -transAmountVal);
         }
         finish();
+
+        super.addAccount(transactionDetail.userId);
+
         overridePendingTransition(R.anim.top_in, R.anim.bottom_out);
+
+
     }
 
 
@@ -241,7 +249,11 @@ public class AddTransactionActivity extends AppCompatActivity implements DatePic
         setResult(RESULT_OK, returnIntent);
 
         finish();
+
+        super.addAccount(Integer.parseInt(userId));
         overridePendingTransition(R.anim.top_in, R.anim.bottom_out);
+
+
     }
 
     public void pickDate(View view) {
@@ -311,6 +323,7 @@ public class AddTransactionActivity extends AppCompatActivity implements DatePic
                 addTransaction(transTitleStr, Double.valueOf(transAmountVal), transTypeVal, transDateStr);
             }
         }
+
     }
 
 

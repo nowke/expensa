@@ -2,6 +2,7 @@ package in.nowke.expensa.activities;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
@@ -37,6 +38,7 @@ import in.nowke.expensa.adapters.AccountDBAdapter;
 import in.nowke.expensa.classes.ApiClientAsyncTask;
 import in.nowke.expensa.classes.Message;
 import in.nowke.expensa.classes.UploadDriveCallback;
+import in.nowke.expensa.classes.Utilities;
 import in.nowke.expensa.sync.AccountToJson;
 import in.nowke.expensa.sync.JsonToAccount;
 
@@ -245,8 +247,13 @@ public class TestActivity extends BaseActivity {
                 Message.message(TestActivity.this, "Error while reading from the file");
                 return;
             }
+            List<String> retrievedAccountIds = Utilities.splitEqually(result, 36);
+            String allAccountIds = "";
+            for (String s: retrievedAccountIds) {
+                allAccountIds += s + "\n";
+            }
 //            Message.message(TestActivity.this, "File contents: " + result);
-            testTextView.setText(result);
+            testTextView.setText(allAccountIds);
 //            try {
 //                JsonToAccount jsonToAccount = new JsonToAccount(TestActivity.this, result);
 //                jsonToAccount.writeAccountToDb();

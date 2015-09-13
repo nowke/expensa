@@ -77,6 +77,10 @@ public class JsonToAccount {
         }
     }
 
+    public AccountDetail getAccountDetailObject() {
+        return this.accountDetail;
+    }
+
     public void writeAccountToDb() {
         long newUserId = helper.addAccount(accountDetail);
         for (TransactionDetail transaction: transactionDetailList) {

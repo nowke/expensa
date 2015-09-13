@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +23,19 @@ import android.widget.Button;
 import android.widget.GridView;
 import android.widget.TextView;
 
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.drive.Drive;
+import com.google.android.gms.drive.DriveApi;
+import com.google.android.gms.drive.DriveContents;
+import com.google.android.gms.drive.DriveFolder;
+import com.google.android.gms.drive.MetadataChangeSet;
+
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.UUID;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -29,9 +43,12 @@ import in.nowke.expensa.BaseActivity;
 import in.nowke.expensa.R;
 import in.nowke.expensa.adapters.AccountDBAdapter;
 import in.nowke.expensa.adapters.AvatarAdapter;
+import in.nowke.expensa.classes.Message;
+import in.nowke.expensa.classes.UploadDriveCallback;
 import in.nowke.expensa.entity.AccountDetail;
 import in.nowke.expensa.classes.Utilities;
 import in.nowke.expensa.fragments.HomeFragment;
+import in.nowke.expensa.sync.AccountToJson;
 
 public class AddAccountActivity extends BaseActivity {
 
@@ -196,6 +213,11 @@ public class AddAccountActivity extends BaseActivity {
 
         overridePendingTransition(R.anim.top_in, R.anim.bottom_out);
 
+        // Sync to Drive
+        super.addAccount(editUserId);
+        super.addAccountHash();
+
+
         new Thread() {
             @Override
             public void run() {
@@ -230,6 +252,10 @@ public class AddAccountActivity extends BaseActivity {
             accountDetail.user_id = id;
 
             finish();
+
+            // Sync to Drive
+            super.addAccount((int) accountDetail.user_id);
+            super.addAccountHash();
 
             overridePendingTransition(R.anim.top_in, R.anim.bottom_out);
 
@@ -277,4 +303,7 @@ public class AddAccountActivity extends BaseActivity {
         Window window = this.getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
     }
+
+    // SYNC RELATED
+
 }
