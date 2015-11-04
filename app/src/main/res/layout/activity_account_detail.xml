@@ -55,8 +55,7 @@
         android:clickable="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        android:longClickable="true"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        android:longClickable="true" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fabEditAccount"
